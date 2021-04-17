@@ -1,0 +1,48 @@
+Appdata\Roaming\Basket
+|
++--Sudoku
+|
++--Snake
+|
++--Cards
+
+Program Files\Basket
+|
++--Basket image
+|
++--resources
+|  |
+|  +--Basket info
+|  |
+|  +--app info
+|  |  |
+|  |  +--Sudoku
+|  |  |
+|  |  +--Snake
+|  |  |
+|  |  +--Basket  
+|
++--apps
+|  |
+|  +--Sudoku image
+|  |
+|  +--Snake image
+|  |
+|  +--Cards image
+
+
+Appdata: files for the app, used by the app (settings files)
+
+app info: details about the app, used by the launcher:
+    -current version
+    -latest version
+    -stable version
+    -size on disk
+
+Basket provides API to apps. This is the common folder.
+API gives an object to store settings in, reading and writing to disk is handled by Basket.
+
+Actions needed by apps:
+-
+
+Basket will update apps.
