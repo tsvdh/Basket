@@ -1,6 +1,7 @@
-package common.user;
+package user;
 
-import api.App;
+import app.App;
+import common.ExternalPropertiesHandler;
 
 public class MyApp extends App {
 

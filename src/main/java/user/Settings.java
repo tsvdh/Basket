@@ -1,6 +1,6 @@
-package common.user;
+package user;
 
-import api.Property;
+import app.Property;
 
 import java.util.function.Function;
 

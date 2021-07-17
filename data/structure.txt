@@ -1,4 +1,4 @@
-Appdata\Roaming\Basket
+User folder\Appdata\Roaming\Basket
 |
 +--Sudoku
 |
@@ -6,21 +6,25 @@ Appdata\Roaming\Basket
 |
 +--Cards
 
-Program Files\Basket
+User folder\Basket
 |
 +--Basket image
 |
 +--resources
 |  |
-|  +--Basket info
+|  +--info
+|  |  |
+|  |  +--Basket info
+|  |  |
+|  |  +--app info
+|  |  |  |
+|  |  |  +--Sudoku
+|  |  |  |
+|  |  |  +--Snake
+|  |  |  |
+|  |  |  +--Basket
 |  |
-|  +--app info
-|  |  |
-|  |  +--Sudoku
-|  |  |
-|  |  +--Snake
-|  |  |
-|  |  +--Basket  
+|  +--style
 |
 +--apps
 |  |
@@ -31,6 +35,9 @@ Program Files\Basket
 |  +--Cards image
 
 
+All general folders will be created at Basket installation.
+App specific folders are created on app installation.
+
 Appdata: files for the app, used by the app (settings files)
 
 app info: details about the app, used by the launcher:
@@ -39,10 +46,8 @@ app info: details about the app, used by the launcher:
     -stable version
     -size on disk
 
-Basket provides API to apps. This is the common folder.
+Basket provides API to apps. This is the api folder.
 API gives an object to store settings in, reading and writing to disk is handled by Basket.
 
-Actions needed by apps:
--
 
 Basket will update apps.
