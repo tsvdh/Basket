@@ -2,9 +2,7 @@ package core;
 
 import common.PathHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.image.Image;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -24,7 +22,9 @@ public class Basket {
         }
 
         BasketController basketController = loader.getController();
-        // basketController.init();
+        basketController.init();
+
+        basketController.vBox.getChildren().addAll(new LibraryItem(), new LibraryItem());
 
         try {
             stage.getIcons().add(new Image(PathHandler.getIconPath()));

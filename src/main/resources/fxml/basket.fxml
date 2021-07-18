@@ -13,12 +13,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.stage.Stage?>
 
-<Stage title="Basket" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<Stage title="Basket" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="core.BasketController">
     <scene>
         <Scene>
-            <AnchorPane prefHeight="500.0" prefWidth="800.0">
+            <AnchorPane prefHeight="700.0" prefWidth="1000.0">
             <children>
-               <BorderPane prefHeight="500.0" prefWidth="800.0">
+               <BorderPane prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <top>
                      <MenuBar focusTraversable="false" BorderPane.alignment="CENTER">
                         <menus>
@@ -41,16 +41,16 @@
                      </MenuBar>
                   </top>
                   <center>
-                     <TabPane focusTraversable="false" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMinHeight="1.0" BorderPane.alignment="CENTER">
+                     <TabPane fx:id="tabPane" focusTraversable="false" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMinHeight="1.0" BorderPane.alignment="CENTER">
                         <tabs>
-                           <Tab closable="false" style="-fx-font-size: 26;" text="Store">
+                           <Tab closable="false" style="-fx-font-size: 26; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" text="Store">
                               <content>
                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                               </content>
                            </Tab>
-                           <Tab closable="false" style="-fx-font-size: 26;" text="Library">
+                           <Tab closable="false" style="-fx-font-size: 26; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" text="Library">
                               <content>
-                                 <ScrollPane focusTraversable="false" prefHeight="446.0" prefWidth="800.0">
+                                 <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false">
                                     <content>
                                        <VBox fx:id="vBox" />
                                     </content>

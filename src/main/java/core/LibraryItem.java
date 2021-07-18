@@ -1,12 +1,11 @@
 package core;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.AnchorPane;
-
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,7 +15,7 @@ public class LibraryItem extends AnchorPane {
     public LibraryItem() {
         super();
 
-        URL url = getClass().getResource("library_item.fxml");
+        URL url = getClass().getResource("/fxml/library_item.fxml");
         FXMLLoader loader = new FXMLLoader(url);
         loader.setController(this);
         loader.setRoot(this);
