@@ -45,14 +45,18 @@
                         <tabs>
                            <Tab closable="false" style="-fx-font-size: 26; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" text="Store">
                               <content>
-                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                 <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false">
+                                    <content>
+                                       <VBox fx:id="storeVBox" />
+                                    </content>
+                                 </ScrollPane>
                               </content>
                            </Tab>
                            <Tab closable="false" style="-fx-font-size: 26; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" text="Library">
                               <content>
                                  <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false">
                                     <content>
-                                       <VBox fx:id="vBox" />
+                                       <VBox fx:id="libraryVBox" />
                                     </content>
                                  </ScrollPane>
                               </content>

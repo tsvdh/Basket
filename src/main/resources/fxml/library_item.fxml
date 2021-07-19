@@ -14,7 +14,7 @@
 
 <fx:root maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" prefHeight="200.0" prefWidth="1000.0" type="AnchorPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox prefHeight="200.0" prefWidth="700.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
+      <VBox prefHeight="200.0" prefWidth="1000.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label text="AppName">
                <font>
@@ -24,16 +24,16 @@
                   <Insets left="5.0" />
                </padding>
             </Label>
-            <HBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="700.0" spacing="100.0">
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
                <children>
                   <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/no_icon.png" />
                      </image>
                   </ImageView>
-                  <VBox alignment="CENTER" prefHeight="145.0" prefWidth="400.0" spacing="30.0">
+                  <VBox alignment="CENTER" spacing="30.0">
                      <children>
-                        <FlowPane alignment="CENTER" hgap="20.0" vgap="10.0">
+                        <FlowPane alignment="CENTER" hgap="20.0" prefWrapLength="600.0" vgap="10.0">
                            <children>
                               <Button fx:id="launchButton" focusTraversable="false" mnemonicParsing="false" onAction="#launch" style="-fx-font-size: 15;" text="Launch">
                                  <font>
@@ -52,7 +52,7 @@
                               </Button>
                            </children>
                         </FlowPane>
-                        <FlowPane alignment="CENTER" hgap="15.0" vgap="10.0">
+                        <FlowPane alignment="CENTER" hgap="15.0" prefWrapLength="600.0" vgap="10.0">
                            <children>
                               <Label fx:id="versionLabel" text="version">
                                  <font>
@@ -72,6 +72,9 @@
             </HBox>
             <Separator focusTraversable="false" />
          </children>
+         <padding>
+            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+         </padding>
       </VBox>
    </children>
 </fx:root>

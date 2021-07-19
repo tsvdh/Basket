@@ -11,7 +11,10 @@ public class BasketController {
     }
 
     @FXML
-    public VBox vBox;
+    public VBox storeVBox;
+
+    @FXML
+    public VBox libraryVBox;
 
     @FXML
     public TabPane tabPane;

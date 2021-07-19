@@ -24,7 +24,8 @@ public class Basket {
         BasketController basketController = loader.getController();
         basketController.init();
 
-        basketController.vBox.getChildren().addAll(new LibraryItem(), new LibraryItem());
+        basketController.storeVBox.getChildren().addAll(new StoreItem(), new StoreItem(), new StoreItem());
+        basketController.libraryVBox.getChildren().addAll(new LibraryItem(), new LibraryItem());
 
         try {
             stage.getIcons().add(new Image(PathHandler.getIconPath()));
