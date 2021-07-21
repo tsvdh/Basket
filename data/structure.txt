@@ -1,3 +1,21 @@
+(Dropbox)
+Apps\Basket\apps
+|
++--Sudoku
+|  |
+|  +--images
+|  |  |
+|  |  +--latest
+|  |  |
+|  |  +--stable
+|  |
+|  +--info
+|  |  |
+|  |  +--icon.png
+|  |  |
+|  |  +--app_info.properties (name, description, latest, stable)
+
+(App specific folders)
 User folder\Appdata\Roaming\Basket
 |
 +--Sudoku
@@ -6,27 +24,26 @@ User folder\Appdata\Roaming\Basket
 |
 +--Cards
 
+(Basket folder)
 User folder\Basket
 |
 +--Basket image
 |
 +--resources
 |  |
-|  +--info
-|  |  |
-|  |  +--Basket info
-|  |  |
-|  |  +--app info
-|  |  |  |
-|  |  |  +--Sudoku
-|  |  |  |
-|  |  |  +--Snake
-|  |  |  |
-|  |  |  +--Basket
+|  +--basket.properties
 |  |
 |  +--style
 |
-+--apps
++--library_info
+|  |
+|  +--Sudoku
+|  |
+|  +--Snake
+|  |
+|  +--Cards
+|
++--images
 |  |
 |  +--Sudoku image
 |  |
