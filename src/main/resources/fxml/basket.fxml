@@ -37,7 +37,7 @@
                            <Menu mnemonicParsing="false" style="-fx-font-size: 14;" text="Help">
                               <items>
                                  <MenuItem mnemonicParsing="false" onAction="#openReadme" style="-fx-font-size: 14;" text="Guide" />
-                                 <MenuItem mnemonicParsing="false" text="About" />
+                                 <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About" />
                               </items>
                            </Menu>
                         </menus>
