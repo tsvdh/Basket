@@ -17,7 +17,7 @@
    <children>
       <VBox prefHeight="200.0" prefWidth="1000.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label text="AppName">
+            <Label fx:id="name" text="AppName">
                <font>
                   <Font size="24.0" />
                </font>
@@ -27,7 +27,7 @@
             </Label>
             <HBox alignment="CENTER_LEFT" spacing="30.0">
                <children>
-                  <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="icon" fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/no_icon.png" />
                      </image>

@@ -14,8 +14,10 @@ import javafx.scene.layout.VBox;
 
 public class BasketController {
 
-    public void init() {
+    private Basket basket;
 
+    public void init(Basket basket) {
+        this.basket = basket;
     }
 
     @FXML
@@ -43,4 +45,8 @@ public class BasketController {
         new Info(infoList, null);
     }
 
+    @FXML
+    public void refresh_store() {
+        basket.loadStore();
+    }
 }

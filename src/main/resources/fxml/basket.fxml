@@ -34,6 +34,11 @@
                                  <MenuItem mnemonicParsing="false" text="Settings" />
                               </items>
                            </Menu>
+                           <Menu mnemonicParsing="false" style="-fx-font-size: 14;" text="Store">
+                             <items>
+                               <MenuItem mnemonicParsing="false" onAction="#refresh_store" style="-fx-font-size: 14;" text="Refresh" />
+                             </items>
+                           </Menu>
                            <Menu mnemonicParsing="false" style="-fx-font-size: 14;" text="Help">
                               <items>
                                  <MenuItem mnemonicParsing="false" onAction="#openReadme" style="-fx-font-size: 14;" text="Guide" />
@@ -50,7 +55,7 @@
                               <content>
                                  <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false">
                                     <content>
-                                       <VBox fx:id="storeVBox" />
+                                       <VBox fx:id="storeVBox" alignment="TOP_CENTER" />
                                     </content>
                                  </ScrollPane>
                               </content>
@@ -59,7 +64,7 @@
                               <content>
                                  <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false">
                                     <content>
-                                       <VBox fx:id="libraryVBox" />
+                                       <VBox fx:id="libraryVBox" alignment="TOP_CENTER" />
                                     </content>
                                  </ScrollPane>
                               </content>

@@ -1,14 +1,19 @@
 package core;
 
 import common.PathHandler;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.net.URL;
-
 public class Basket {
+
+    private final BasketController basketController;
 
     public Basket() {
         URL url = getClass().getResource("/fxml/basket.fxml");
@@ -21,11 +26,10 @@ public class Basket {
             throw new RuntimeException(e);
         }
 
-        BasketController basketController = loader.getController();
-        basketController.init();
+        basketController = loader.getController();
+        basketController.init(this);
 
-        basketController.storeVBox.getChildren().addAll(new StoreItem(), new StoreItem(), new StoreItem());
-        basketController.libraryVBox.getChildren().addAll(new LibraryItem(), new LibraryItem());
+        basketController.tabPane.getSelectionModel().select(0); // open store tab at startup
 
         try {
             stage.getIcons().add(new Image(PathHandler.getIconPath()));
@@ -36,5 +40,18 @@ public class Basket {
         // }
 
         stage.show();
+
+        loadStore();
+    }
+
+    void loadStore() {
+        List<Node> items = basketController.storeVBox.getChildren();
+        items.clear();
+
+        StoreLoadTask task = new StoreLoadTask(this);
+        task.setOnSucceeded(event -> items.addAll(task.getValue()));
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
     }
 }
