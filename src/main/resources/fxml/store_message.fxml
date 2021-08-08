@@ -7,17 +7,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="CENTER" layoutY="-181.0" prefHeight="0.0" prefWidth="264.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="CENTER" layoutY="-181.0" prefHeight="0.0" prefWidth="137.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label focusTraversable="false" text="Could not connect to the store">
+            <Label fx:id="message" focusTraversable="false" text="Store message">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Button focusTraversable="false" mnemonicParsing="false" onAction="#retryLoading" text="Retry">
+            <Button fx:id="retryButton" focusTraversable="false" mnemonicParsing="false" text="Retry">
                <font>
                   <Font size="16.0" />
                </font>

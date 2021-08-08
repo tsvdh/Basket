@@ -11,11 +11,21 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import static core.StoreMessage.newStoreMessage;
+
 public class Basket {
+
+    private static final class InstanceHolder {
+        private static final Basket INSTANCE = new Basket();
+    }
+
+    public static Basket getInstance() {
+        return InstanceHolder.INSTANCE;
+    }
 
     private final BasketController basketController;
 
-    public Basket() {
+    private Basket() {
         URL url = getClass().getResource("/fxml/basket.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
@@ -47,9 +57,13 @@ public class Basket {
     void loadStore() {
         List<Node> items = basketController.storeVBox.getChildren();
         items.clear();
+        items.add(newStoreMessage("Loading"));
 
-        StoreLoadTask task = new StoreLoadTask(this);
-        task.setOnSucceeded(event -> items.addAll(task.getValue()));
+        StoreLoadTask task = new StoreLoadTask();
+        task.setOnSucceeded(event -> {
+            items.clear();
+            items.addAll(task.getValue());
+        });
 
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(task);

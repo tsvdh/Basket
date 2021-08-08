@@ -2,20 +2,16 @@ package core;
 
 import db.DBConnectException;
 import db.DBConnection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 import org.bson.Document;
 
+import static core.StoreMessage.newStoreErrorMessage;
+import static java.util.Collections.singletonList;
+
 class StoreLoadTask extends Task<List<Node>> {
-
-    private final StoreError storeError;
-
-    StoreLoadTask(Basket basket) {
-        storeError = new StoreError(basket);
-    }
 
     @Override
     protected List<Node> call() {
@@ -27,7 +23,7 @@ class StoreLoadTask extends Task<List<Node>> {
         try {
             documents = DBConnection.getInstance().getAppInfo();
         } catch (DBConnectException e) {
-            return Collections.singletonList(storeError);
+            return singletonList(newStoreErrorMessage(e.getMessage()));
         }
 
         LinkedList<Node> items = new LinkedList<>();

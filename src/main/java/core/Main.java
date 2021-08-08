@@ -7,7 +7,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        new Basket();
+        //noinspection ResultOfMethodCallIgnored
+        Basket.getInstance();
     }
 
     public static void main(String[] args) {
