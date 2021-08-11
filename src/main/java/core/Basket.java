@@ -1,6 +1,5 @@
 package core;
 
-import common.PathHandler;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import static core.StoreMessage.newStoreMessage;
@@ -41,14 +39,6 @@ public class Basket {
 
         basketController.tabPane.getSelectionModel().select(0); // open store tab at startup
 
-        try {
-            stage.getIcons().add(new Image(PathHandler.getIconPath()));
-        } catch (Exception ignored) {}
-
-        // if (styleHandler != null) {
-        //     styleHandler.applyStyle(stage.getScene());
-        // }
-
         stage.show();
 
         loadStore();
@@ -57,7 +47,7 @@ public class Basket {
     void loadStore() {
         List<Node> items = basketController.storeVBox.getChildren();
         items.clear();
-        items.add(newStoreMessage("Loading"));
+        items.add(newStoreMessage("Loading..."));
 
         StoreLoadTask task = new StoreLoadTask();
         task.setOnSucceeded(event -> {

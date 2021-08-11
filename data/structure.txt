@@ -14,9 +14,13 @@ User folder\Basket
 |
 +--resources
 |  |
-|  +--basket.properties
+|  +--private
+|  |  |
+|  |  +--basket.properties
 |  |
-|  +--style
+|  +--public
+|  |  |
+|  |  +--style
 |
 +--library_info
 |  |

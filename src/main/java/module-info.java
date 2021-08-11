@@ -3,9 +3,12 @@ module basket {
 
     requires java.desktop;
     requires mongo.java.driver;
-    // requires org.apache.logging.log4j;
     requires logback.classic;
     requires org.slf4j;
 
     exports core;
+    exports main;
+
+    opens properties to basket.api;
+    opens images to basket.api;
 }

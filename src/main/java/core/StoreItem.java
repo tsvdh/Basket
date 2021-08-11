@@ -46,7 +46,7 @@ public class StoreItem extends AnchorPane {
             if (inputStream != null) {
                 icon.setImage(new Image(inputStream));
             }
-        } // these exceptions indicate a bad entry in the database, so they won't be added to the store
+        } // these exceptions indicate a bad entry in the database, so they are not added to the store
         catch (ClassCastException | NullPointerException | MalformedURLException e) { // TODO: add some kind of alert for dev/admin
             this.valid = false;
         } catch (IOException ignored) {}

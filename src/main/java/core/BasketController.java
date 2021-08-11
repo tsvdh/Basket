@@ -34,7 +34,7 @@ public class BasketController {
         try {
             Desktop.getDesktop().browse(new URI("https://github.com/tsvdh/Basket#readme"));
         } catch (IOException e) {
-            new Message("Could not open the website", true, null);
+            new Message("Could not open the website", true);
         }
     }
 
@@ -42,7 +42,7 @@ public class BasketController {
     public void showAbout() {
         List<String> infoList = new LinkedList<>();
         infoList.add("Made by Tobias van den Hurk");
-        new Info(infoList, null);
+        new Info(infoList);
     }
 
     @FXML
