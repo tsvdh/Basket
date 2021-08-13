@@ -1,10 +1,11 @@
 package main;
 
 import app.BasketApp;
-import common.pre_built.StyleHandler;
+import common.StyleHandler;
 import core.Basket;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.Style;
 
 public class Main extends Application {
 
@@ -18,7 +19,8 @@ public class Main extends Application {
 
         @Override
         public StyleHandler makeStyleHandler() {
-            return new StyleHandler("clean", StyleHandler.Location.EXTERNAL);
+            Style jMetroStyle = (Style) BasketApp.getSettingsHandler().getProperty(Settings.jmetro_style);
+            return new StyleHandler(jMetroStyle);
         }
 
         public static void invokeLaunch() {

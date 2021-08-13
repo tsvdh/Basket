@@ -29,7 +29,7 @@
                                  <MenuItem mnemonicParsing="false" style="-fx-font-size: 14;" text="Check for updates" />
                                  <MenuItem mnemonicParsing="false" text="Uninstall" />
                                  <SeparatorMenuItem mnemonicParsing="false" />
-                                 <CheckMenuItem mnemonicParsing="false" text="Dark mode" />
+                                 <CheckMenuItem fx:id="darkModeMenuItem" mnemonicParsing="false" onAction="#swapJMetroTheme" text="Dark mode" />
                                  <SeparatorMenuItem mnemonicParsing="false" />
                                  <MenuItem mnemonicParsing="false" text="Settings" />
                               </items>

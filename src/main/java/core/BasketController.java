@@ -1,7 +1,7 @@
 package core;
 
-import common.pre_built.popups.Info;
-import common.pre_built.popups.Message;
+import app.BasketApp;
+import common.PropertiesHandler;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -9,8 +9,13 @@ import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
+import jfxtras.styles.jmetro.Style;
+import main.Settings;
+import prebuilt.Info;
+import prebuilt.Message;
 
 public class BasketController {
 
@@ -18,6 +23,12 @@ public class BasketController {
 
     public void init(Basket basket) {
         this.basket = basket;
+
+        PropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
+        Style jMetroStyle = (Style) settingsHandler.getProperty(Settings.jmetro_style);
+        if (jMetroStyle == Style.DARK) {
+            darkModeMenuItem.setSelected(true);
+        }
     }
 
     @FXML
@@ -48,5 +59,23 @@ public class BasketController {
     @FXML
     public void refresh_store() {
         basket.loadStore();
+    }
+
+    @FXML
+    public CheckMenuItem darkModeMenuItem;
+
+    @FXML
+    public void swapJMetroTheme() {
+        PropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
+        Style jMetroStyle = (Style) settingsHandler.getProperty(Settings.jmetro_style);
+
+        if (jMetroStyle == Style.LIGHT) {
+            jMetroStyle = Style.DARK;
+        } else {
+            jMetroStyle = Style.LIGHT;
+        }
+
+        settingsHandler.setProperty(Settings.jmetro_style, jMetroStyle);
+        BasketApp.getStyleHandler().reStyleJMetro(jMetroStyle);
     }
 }

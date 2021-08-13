@@ -16,7 +16,7 @@
    <children>
       <VBox prefHeight="200.0" prefWidth="1000.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label text="AppName">
+            <Label style="-fx-font-size: 24;" text="AppName">
                <font>
                   <Font size="24.0" />
                </font>
@@ -54,7 +54,7 @@
                         </FlowPane>
                         <FlowPane alignment="CENTER" hgap="15.0" prefWrapLength="600.0" vgap="10.0">
                            <children>
-                              <Label fx:id="versionLabel" text="version">
+                              <Label fx:id="versionLabel" style="-fx-font-size: 18;" text="version">
                                  <font>
                                     <Font size="18.0" />
                                  </font>

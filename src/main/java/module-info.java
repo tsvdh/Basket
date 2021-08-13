@@ -5,6 +5,7 @@ module basket {
     requires mongo.java.driver;
     requires logback.classic;
     requires org.slf4j;
+    requires org.jfxtras.styles.jmetro;
 
     exports core;
     exports main;

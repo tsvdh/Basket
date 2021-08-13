@@ -3,12 +3,11 @@ package main;
 import app.Property;
 
 import java.util.function.Function;
+import jfxtras.styles.jmetro.Style;
 
 public enum Settings implements Property {
 
-    name(o -> o),
-    age(Integer::parseInt),
-    height(Double::parseDouble);
+    jmetro_style(Style::valueOf);
 
     private final Function<String, Object> parser;
 
