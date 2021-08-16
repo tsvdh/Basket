@@ -45,6 +45,7 @@ public class InstallTask extends Task<Void> {
 
     @Override
     protected Void call() {
+        updateProgress(0, 0);
         updateMessage("Setting up");
 
         Path appHomePath = Path.of(PathHandler.getAppHomePath(name));
@@ -75,7 +76,7 @@ public class InstallTask extends Task<Void> {
             Files.copy(iconStream, Path.of(appHomePath + "/icon.png"));
 
             // download image
-            updateMessage("downloading");
+            updateMessage("Downloading");
 
             imageOutStream = new FileOutputStream(imagePath.toString());
 
@@ -90,13 +91,13 @@ public class InstallTask extends Task<Void> {
                 imageOutStream.write(buffer, 0, bytesRead);
                 current += bytesRead;
 
-                updateMessage("downloading: " + toMB(current) + " / " + totalMB + " MB" + "\r");
+                updateMessage("Downloading: " + toMB(current) + " / " + totalMB + " MB");
                 updateProgress(current, total);
             }
             imageOutStream.close();
 
             // extract image
-            updateMessage("extracting");
+            updateMessage("Extracting");
             ZipFile zipFile = new ZipFile(imagePath.toString());
             zipFile.extractAll(appHomePath.toString());
             // delete zip
@@ -106,7 +107,7 @@ public class InstallTask extends Task<Void> {
             ExternalPropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
             StringQueue strings = (StringQueue) settingsHandler.getProperty(Settings.installed_apps);
             strings.add(name);
-            settingsHandler.setProperty(Settings.installed_apps, strings).save();
+            settingsHandler.setProperty(Settings.installed_apps, strings);
         }
         catch (IOException | RuntimeException e) {
             try {
@@ -133,6 +134,9 @@ public class InstallTask extends Task<Void> {
     }
 
     private static void deletePathAndContent(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            return;
+        }
         //noinspection ResultOfMethodCallIgnored
         Files.walk(path)
                 .sorted(Comparator.reverseOrder())

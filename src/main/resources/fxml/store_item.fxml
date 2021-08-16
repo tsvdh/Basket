@@ -47,7 +47,7 @@
                         <HBox fx:id="installHBox" alignment="CENTER" spacing="20.0" visible="false">
                            <children>
                               <ProgressBar fx:id="progressBar" focusTraversable="false" prefWidth="200.0" progress="0.0" />
-                              <Label fx:id="progressLabel" style="-fx-font-size: 14;" text="info">
+                              <Label fx:id="progressLabel" style="-fx-font-size: 14;" text="Info">
                                  <font>
                                     <Font size="14.0" />
                                  </font>

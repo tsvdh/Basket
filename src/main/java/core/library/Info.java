@@ -8,9 +8,9 @@ public enum Info implements Property {
 
     name(String::valueOf),
     description(String::valueOf),
-    current_version(Version::valueOf),
-    stable_version(Version::valueOf),
-    latest_version(Version::valueOf);
+    current_version(Version::of),
+    stable_version(Version::of),
+    latest_version(Version::of);
 
     private final Function<String, Object> parser;
 
