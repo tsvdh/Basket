@@ -1,5 +1,6 @@
-package core;
+package core.store;
 
+import core.Basket;
 import java.io.IOException;
 import java.net.URL;
 import javafx.fxml.FXML;

@@ -1,4 +1,4 @@
-package core;
+package core.library;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

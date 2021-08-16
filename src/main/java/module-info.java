@@ -6,10 +6,14 @@ module basket {
     requires logback.classic;
     requires org.slf4j;
     requires org.jfxtras.styles.jmetro;
-
-    exports core;
-    exports main;
+    requires zip4j;
+    requires org.apache.commons.io;
 
     opens properties to basket.api;
     opens images to basket.api;
+
+    exports core.store;
+    exports core.library;
+    exports core;
+    exports main;
 }

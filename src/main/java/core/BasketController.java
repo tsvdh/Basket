@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
+import jfxtras.styles.jmetro.JMetroStyleClass;
 import jfxtras.styles.jmetro.Style;
 import main.Settings;
 import prebuilt.Info;
@@ -23,6 +24,9 @@ public class BasketController {
 
     public void init(Basket basket) {
         this.basket = basket;
+
+        tabPane.getSelectionModel().select(0); // open store tab at startup
+        tabPane.getStyleClass().add(JMetroStyleClass.UNDERLINE_TAB_PANE);
 
         PropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
         Style jMetroStyle = (Style) settingsHandler.getProperty(Settings.jmetro_style);

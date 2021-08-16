@@ -17,7 +17,7 @@
    <children>
       <VBox prefHeight="200.0" prefWidth="1000.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="name" style="-fx-font-size: 24px;" text="AppName">
+            <Label fx:id="nameLabel" style="-fx-font-size: 24px;" text="AppName">
                <font>
                   <Font size="24.0" />
                </font>
@@ -32,7 +32,7 @@
                         <Image url="@../images/no_icon.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="description" focusTraversable="false" minWidth="130.0" prefWidth="200.0" style="-fx-font-size: 14;" text="Description. Lorem ipsum dolor sit amet, sit in timeam scripta partiendo." wrapText="true">
+                  <Label fx:id="descriptionLabel" focusTraversable="false" minWidth="130.0" prefWidth="200.0" style="-fx-font-size: 14;" text="Description. Lorem ipsum dolor sit amet, sit in timeam scripta partiendo." wrapText="true">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -44,7 +44,16 @@
                               <Font size="15.0" />
                            </font>
                         </Button>
-                        <ProgressBar fx:id="progressBar" focusTraversable="false" prefWidth="200.0" progress="0.0" visible="false" />
+                        <HBox fx:id="installHBox" alignment="CENTER" spacing="20.0" visible="false">
+                           <children>
+                              <ProgressBar fx:id="progressBar" focusTraversable="false" prefWidth="200.0" progress="0.0" />
+                              <Label fx:id="progressLabel" style="-fx-font-size: 14;" text="info">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
                      </children>
                   </StackPane>
                </children>

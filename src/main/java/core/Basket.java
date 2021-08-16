@@ -1,15 +1,15 @@
 package core;
 
+import core.store.StoreLoadTask;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 
-import static core.StoreMessage.newStoreMessage;
+import static core.store.StoreMessage.newStoreMessage;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 public class Basket {
 
@@ -37,14 +37,12 @@ public class Basket {
         basketController = loader.getController();
         basketController.init(this);
 
-        basketController.tabPane.getSelectionModel().select(0); // open store tab at startup
-
         stage.show();
 
         loadStore();
     }
 
-    void loadStore() {
+    public void loadStore() {
         List<Node> items = basketController.storeVBox.getChildren();
         items.clear();
         items.add(newStoreMessage("Loading..."));
@@ -55,7 +53,6 @@ public class Basket {
             items.addAll(task.getValue());
         });
 
-        Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(task);
+        newSingleThreadExecutor().execute(task);
     }
 }

@@ -1,4 +1,4 @@
-package core;
+package core.store;
 
 import db.DBConnectException;
 import db.DBConnection;
@@ -8,10 +8,10 @@ import javafx.concurrent.Task;
 import javafx.scene.Node;
 import org.bson.Document;
 
-import static core.StoreMessage.newStoreErrorMessage;
+import static core.store.StoreMessage.newStoreErrorMessage;
 import static java.util.Collections.singletonList;
 
-class StoreLoadTask extends Task<List<Node>> {
+public class StoreLoadTask extends Task<List<Node>> {
 
     @Override
     protected List<Node> call() {

@@ -1,2 +1,4 @@
 security
  - run apps with restricted access
+resource closing
+ - property handlers
