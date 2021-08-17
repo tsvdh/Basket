@@ -44,10 +44,8 @@ Appdata: files for the app, used by the app (settings files)
 
 app info: details about the app, used by the launcher:
     -name
-    -description
-    -current version (latest / stable)
-    -latest version
-    -stable version
+    -current version
+    -use experimental
     -size on disk
 
 Basket provides API to apps. This is the api folder.

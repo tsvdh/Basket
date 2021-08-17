@@ -11,7 +11,7 @@
    <children>
       <VBox alignment="CENTER" layoutY="-181.0" prefHeight="0.0" prefWidth="137.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="message" focusTraversable="false" text="Store message">
+            <Label fx:id="message" focusTraversable="false" style="-fx-font-size: 18;" text="Store message">
                <font>
                   <Font size="18.0" />
                </font>

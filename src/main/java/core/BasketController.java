@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import jfxtras.styles.jmetro.JMetroStyleClass;
@@ -20,11 +21,7 @@ import prebuilt.Message;
 
 public class BasketController {
 
-    private Basket basket;
-
-    public void init(Basket basket) {
-        this.basket = basket;
-
+    public void init() {
         tabPane.getSelectionModel().select(0); // open store tab at startup
         tabPane.getStyleClass().add(JMetroStyleClass.UNDERLINE_TAB_PANE);
 
@@ -61,11 +58,6 @@ public class BasketController {
     }
 
     @FXML
-    public void refresh_store() {
-        basket.loadStore();
-    }
-
-    @FXML
     public CheckMenuItem darkModeMenuItem;
 
     @FXML
@@ -81,5 +73,21 @@ public class BasketController {
 
         settingsHandler.setProperty(Settings.jmetro_style, jMetroStyle);
         BasketApp.getStyleHandler().reStyleJMetro(jMetroStyle);
+    }
+
+    @FXML
+    public MenuItem refreshStoreButton;
+
+    @FXML
+    public void refreshStore() {
+        Basket.getInstance().loadStore();
+    }
+
+    @FXML
+    public MenuItem refreshLibraryButton;
+
+    @FXML
+    public void refreshLibrary() {
+        Basket.getInstance().loadLibrary();
     }
 }

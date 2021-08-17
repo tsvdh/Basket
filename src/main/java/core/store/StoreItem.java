@@ -1,12 +1,12 @@
 package core.store;
 
 import app.BasketApp;
+import core.Basket;
 import core.InstallTask;
 import core.StringQueue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -29,7 +29,6 @@ import static util.url.URLConstructor.makeURL;
 public class StoreItem extends AnchorPane {
 
     private boolean valid;
-
     private InstallTask installTask;
 
     public StoreItem(Document document) {
@@ -58,21 +57,23 @@ public class StoreItem extends AnchorPane {
             }
             URL iconURL = makeURL(iconAddress);
 
-            try (InputStream iconInputStream = iconURL.openStream()) {
-                icon.setImage(new Image(iconInputStream));
+            try (InputStream in = iconURL.openStream()) {
+                icon.setImage(new Image(in));
             }
             catch (IOException ignored) {}
 
-            if (checkInstalledAndSetButton()) return;
+            if (installed()) {
+                installButton.setDisable(true);
+                installButton.setText("Installed");
+                return;
+            }
 
             URL githubHome = makeURL(requireNonNull(document.getString("github_home")));
 
             Document versions = (Document) document.get("versions");
             Version stable = Version.of(versions.getString("stable"));
-            Version latest = Version.of(versions.getString("latest"));
 
-            installTask = new InstallTask(nameLabel.getText(), descriptionLabel.getText(),
-                    iconURL, githubHome, stable, latest);
+            installTask = new InstallTask(nameLabel.getText(), iconURL, githubHome, stable);
 
         } // an exception indicates a bad entry in the database, so they are not added to the store
         catch (RuntimeException e) { // TODO: add some kind of alert for dev/admin
@@ -84,14 +85,9 @@ public class StoreItem extends AnchorPane {
         return valid;
     }
 
-    private boolean checkInstalledAndSetButton() {
+    private boolean installed() {
         StringQueue strings = (StringQueue) BasketApp.getSettingsHandler().getProperty(Settings.installed_apps);
-        if (strings.contains(nameLabel.getText())) {
-            installButton.setDisable(true);
-            installButton.setText("Installed");
-            return true;
-        }
-        return false;
+        return strings.contains(nameLabel.getText());
     }
 
     @FXML
@@ -107,7 +103,7 @@ public class StoreItem extends AnchorPane {
     public Button installButton;
 
     @FXML
-    public void install(ActionEvent event) {
+    public void install() {
         progressBar.progressProperty().bind(installTask.progressProperty());
         progressLabel.textProperty().bind(installTask.messageProperty());
 
@@ -118,9 +114,14 @@ public class StoreItem extends AnchorPane {
             installButton.setVisible(true);
             installHBox.setVisible(false);
 
-            if (!checkInstalledAndSetButton()) {
+            if (installed()) {
+                installButton.setDisable(true);
+                installButton.setText("Installed");
+            } else {
                 new Message("Could not install app", true);
             }
+
+            Basket.getInstance().loadLibrary();
         });
 
         newSingleThreadExecutor().execute(installTask);

@@ -2,13 +2,18 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -16,7 +21,7 @@
    <children>
       <VBox prefHeight="200.0" prefWidth="1000.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label style="-fx-font-size: 24;" text="AppName">
+            <Label fx:id="nameLabel" style="-fx-font-size: 24;" text="AppName">
                <font>
                   <Font size="24.0" />
                </font>
@@ -26,48 +31,45 @@
             </Label>
             <HBox alignment="CENTER_LEFT" spacing="20.0">
                <children>
-                  <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="icon" fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/no_icon.png" />
                      </image>
                   </ImageView>
-                  <VBox alignment="CENTER" spacing="30.0">
+                  <StackPane prefWidth="700.0">
                      <children>
-                        <FlowPane alignment="CENTER" hgap="20.0" prefWrapLength="600.0" vgap="10.0">
+                        <HBox alignment="CENTER" spacing="20.0">
                            <children>
                               <Button fx:id="launchButton" focusTraversable="false" mnemonicParsing="false" onAction="#launch" style="-fx-font-size: 15;" text="Launch">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="removeButton" focusTraversable="false" mnemonicParsing="false" onAction="#remove" style="-fx-font-size: 15;" text="Remove">
+                              <MenuButton mnemonicParsing="false" style="-fx-font-size: 15;" text="More">
+                                <items>
+                                  <MenuItem fx:id="updateButton" mnemonicParsing="false" onAction="#update" text="Update" />
+                                    <CheckMenuItem fx:id="useExperimentalButton" mnemonicParsing="false" onAction="#swapVersion" text="Use experimental version" />
+                                    <SeparatorMenuItem mnemonicParsing="false" />
+                                    <MenuItem mnemonicParsing="false" onAction="#remove" text="Remove" />
+                                </items>
                                  <font>
                                     <Font size="15.0" />
                                  </font>
-                              </Button>
-                              <Button fx:id="moreButton" focusTraversable="false" mnemonicParsing="false" onAction="#more" style="-fx-font-size: 15;" text="More">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Button>
+                              </MenuButton>
                            </children>
-                        </FlowPane>
-                        <FlowPane alignment="CENTER" hgap="15.0" prefWrapLength="600.0" vgap="10.0">
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" visible="false">
                            <children>
-                              <Label fx:id="versionLabel" style="-fx-font-size: 18;" text="version">
+                              <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0" />
+                              <Label fx:id="progressLabel" style="-fx-font-size: 14;" text="Info">
                                  <font>
-                                    <Font size="18.0" />
+                                    <Font size="14.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="updateButton" focusTraversable="false" mnemonicParsing="false" onAction="#update" style="-fx-font-size: 15;" text="Update">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Button>
                            </children>
-                        </FlowPane>
+                        </HBox>
                      </children>
-                  </VBox>
+                  </StackPane>
                </children>
             </HBox>
             <Separator focusTraversable="false" />

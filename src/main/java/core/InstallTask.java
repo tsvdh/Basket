@@ -4,23 +4,22 @@ import app.BasketApp;
 import common.ExternalPropertiesHandler;
 import common.PathHandler;
 import core.library.Info;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Comparator;
 import java.util.Locale;
 import javafx.concurrent.Task;
 import main.Settings;
 import net.lingala.zip4j.ZipFile;
 import util.Version;
 
+import static common.FileHandler.deletePathAndContent;
 import static java.lang.Math.pow;
 import static org.apache.commons.io.IOUtils.closeQuietly;
 import static util.url.URLConstructor.makeURL;
@@ -28,19 +27,15 @@ import static util.url.URLConstructor.makeURL;
 public class InstallTask extends Task<Void> {
 
     private final String name;
-    private final String description;
     private final URL iconURL;
     private final URL githubHome;
-    private final Version stable;
-    private final Version latest;
+    private final Version wantedVersion;
 
-    public InstallTask(String name, String description, URL iconURL, URL githubHome, Version stable, Version latest) {
+    public InstallTask(String name, URL iconURL, URL githubHome, Version wantedVersion) {
         this.name = name;
-        this.description = description;
         this.iconURL = iconURL;
         this.githubHome = githubHome;
-        this.stable = stable;
-        this.latest = latest;
+        this.wantedVersion = wantedVersion;
     }
 
     @Override
@@ -49,11 +44,11 @@ public class InstallTask extends Task<Void> {
         updateMessage("Setting up");
 
         Path appHomePath = Path.of(PathHandler.getAppHomePath(name));
-        URL githubURL = makeURL(toGithubAddress(githubHome.toString(), stable));
+        URL githubURL = makeURL(toGithubAddress(githubHome.toString(), wantedVersion));
         Path imagePath = Path.of(appHomePath + "/image.zip");
 
         URLConnection urlConnection;
-        FileOutputStream imageOutStream = null;
+        OutputStream imageOutStream = null;
         try (
                 InputStream iconStream = iconURL.openStream();
                 InputStream imageInStream = (urlConnection = githubURL.openConnection()).getInputStream();
@@ -66,10 +61,8 @@ public class InstallTask extends Task<Void> {
             ExternalPropertiesHandler infoHandler = new ExternalPropertiesHandler(
                     appHomePath + "/info.properties", null);
             infoHandler.setProperty(Info.name, name)
-                    .setProperty(Info.description, description)
-                    .setProperty(Info.current_version, stable)
-                    .setProperty(Info.stable_version, stable)
-                    .setProperty(Info.latest_version, latest)
+                    .setProperty(Info.current_version, wantedVersion)
+                    .setProperty(Info.use_latest, false)
                     .save();
 
             // download icon
@@ -78,7 +71,7 @@ public class InstallTask extends Task<Void> {
             // download image
             updateMessage("Downloading");
 
-            imageOutStream = new FileOutputStream(imagePath.toString());
+            imageOutStream = Files.newOutputStream(imagePath);
 
             long current = 0;
             long total = urlConnection.getContentLengthLong();
@@ -103,7 +96,7 @@ public class InstallTask extends Task<Void> {
             // delete zip
             Files.delete(imagePath);
 
-            // on success, add app name to settings
+            // register app
             ExternalPropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
             StringQueue strings = (StringQueue) settingsHandler.getProperty(Settings.installed_apps);
             strings.add(name);
@@ -120,11 +113,11 @@ public class InstallTask extends Task<Void> {
         return null;
     }
 
-    private static String toGithubAddress(String githubHome, Version version) {
+    public static String toGithubAddress(String githubHome, Version version) {
         return githubHome + "/releases/download/" + version.toString() + "/image.zip";
     }
 
-    private static String toMB(long bytes) {
+    public static String toMB(long bytes) {
         double MB = pow(10, 6);
 
         DecimalFormat decimalFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH));
@@ -133,14 +126,5 @@ public class InstallTask extends Task<Void> {
         return decimalFormat.format(megaBytes);
     }
 
-    private static void deletePathAndContent(Path path) throws IOException {
-        if (!Files.exists(path)) {
-            return;
-        }
-        //noinspection ResultOfMethodCallIgnored
-        Files.walk(path)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
-    }
+
 }

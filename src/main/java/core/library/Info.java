@@ -7,10 +7,8 @@ import util.Version;
 public enum Info implements Property {
 
     name(String::valueOf),
-    description(String::valueOf),
     current_version(Version::of),
-    stable_version(Version::of),
-    latest_version(Version::of);
+    use_latest(Boolean::parseBoolean);
 
     private final Function<String, Object> parser;
 

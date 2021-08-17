@@ -36,7 +36,12 @@
                            </Menu>
                            <Menu mnemonicParsing="false" style="-fx-font-size: 14;" text="Store">
                              <items>
-                               <MenuItem mnemonicParsing="false" onAction="#refresh_store" style="-fx-font-size: 14;" text="Refresh" />
+                               <MenuItem fx:id="refreshStoreButton" mnemonicParsing="false" onAction="#refreshStore" style="-fx-font-size: 14;" text="Refresh" />
+                             </items>
+                           </Menu>
+                           <Menu mnemonicParsing="false" style="-fx-font-size: 14;" text="Library">
+                             <items>
+                               <MenuItem fx:id="refreshLibraryButton" mnemonicParsing="false" onAction="#refreshLibrary" text="Refresh" />
                              </items>
                            </Menu>
                            <Menu mnemonicParsing="false" style="-fx-font-size: 14;" text="Help">
