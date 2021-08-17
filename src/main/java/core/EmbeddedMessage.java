@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.AnchorPane;
 
 public class EmbeddedMessage extends AnchorPane {
@@ -38,12 +39,20 @@ public class EmbeddedMessage extends AnchorPane {
             throw new RuntimeException(e);
         }
 
-        this.message.setText(message);
+        if (message.equals("loading")) {
+            this.messageLabel.setVisible(false);
+            this.loadingIndicator.setVisible(true);
+        } else {
+            this.messageLabel.setText(message);
+        }
     }
 
     @FXML
     public Button retryButton;
 
     @FXML
-    public Label message;
+    public Label messageLabel;
+
+    @FXML
+    public ProgressBar loadingIndicator;
 }

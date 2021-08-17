@@ -3,7 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -11,11 +13,16 @@
    <children>
       <VBox alignment="CENTER" layoutY="-181.0" prefHeight="0.0" prefWidth="137.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="message" focusTraversable="false" style="-fx-font-size: 18;" text="Store message">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
+            <StackPane>
+               <children>
+                  <ProgressBar fx:id="loadingIndicator" focusTraversable="false" maxWidth="300.0" visible="false" />
+                  <Label fx:id="messageLabel" focusTraversable="false" style="-fx-font-size: 18;" text="Message">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </StackPane>
             <Button fx:id="retryButton" focusTraversable="false" mnemonicParsing="false" text="Retry">
                <font>
                   <Font size="16.0" />

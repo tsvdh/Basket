@@ -47,7 +47,7 @@ public class Basket {
     public void loadStore() {
         List<Node> items = controller.storeVBox.getChildren();
         items.clear();
-        items.add(newEmbeddedMessage("Loading..."));
+        items.add(newEmbeddedMessage("loading"));
 
         StoreLoadTask task = new StoreLoadTask();
         task.setOnSucceeded(event -> {
