@@ -22,6 +22,7 @@ import prebuilt.Message;
 import util.Version;
 import util.url.BadURLException;
 
+import static java.lang.Math.signum;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static util.url.URLConstructor.makeURL;
@@ -104,6 +105,18 @@ public class StoreItem extends AnchorPane {
 
     @FXML
     public void install() {
+        installTask.progressProperty().addListener((observable, oldValue, newValue) -> {
+
+            if (signum(oldValue.floatValue()) == signum(newValue.floatValue())) {
+                return; // no change as same bar should be kept
+            }
+
+            boolean loading = newValue.floatValue() == -1;
+
+            loadingBar.setVisible(loading);
+            progressBar.setVisible(!loading);
+        });
+
         progressBar.progressProperty().bind(installTask.progressProperty());
         progressLabel.textProperty().bind(installTask.messageProperty());
 
@@ -135,4 +148,7 @@ public class StoreItem extends AnchorPane {
 
     @FXML
     public ProgressBar progressBar;
+
+    @FXML
+    public ProgressBar loadingBar;
 }

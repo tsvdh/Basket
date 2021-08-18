@@ -40,8 +40,8 @@ public class InstallTask extends Task<Void> {
 
     @Override
     protected Void call() {
-        updateProgress(0, 0);
         updateMessage("Setting up");
+        updateProgress(0, 1);
 
         Path appHomePath = Path.of(PathHandler.getAppHomePath(name));
         URL githubURL = makeURL(toGithubAddress(githubHome.toString(), wantedVersion));
@@ -91,6 +91,8 @@ public class InstallTask extends Task<Void> {
 
             // extract image
             updateMessage("Extracting");
+            updateProgress(-1, 1);
+
             ZipFile zipFile = new ZipFile(imagePath.toString());
             zipFile.extractAll(appHomePath.toString());
             // delete zip

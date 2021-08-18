@@ -107,11 +107,11 @@ public class LibraryItem extends AnchorPane {
         strings.remove(appName);
         settingsHandler.setProperty(Settings.installed_apps, strings);
 
-        // remove item from library
-        Platform.runLater(() -> Basket.getInstance().controller.libraryVBox.getChildren().remove(this));
-
-        // refresh store
-        Basket.getInstance().loadStore();
+        // refresh store and library
+        Platform.runLater(() -> {
+            Basket.getInstance().loadStore();
+            Basket.getInstance().loadLibrary();
+        });
 
         // Delete code. Doesn't matter if this fails, the folder will be deleted at install anyway
         try {

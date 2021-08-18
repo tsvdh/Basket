@@ -45,7 +45,7 @@
                                     <Font size="15.0" />
                                  </font>
                               </Button>
-                              <MenuButton mnemonicParsing="false" style="-fx-font-size: 15;" text="More">
+                              <MenuButton mnemonicParsing="false" style="-fx-font-size: 15;" styleClass="light" text="More">
                                 <items>
                                   <MenuItem fx:id="updateButton" mnemonicParsing="false" onAction="#update" text="Update" />
                                     <CheckMenuItem fx:id="useExperimentalButton" mnemonicParsing="false" onAction="#swapVersion" text="Use experimental version" />

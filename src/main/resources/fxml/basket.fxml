@@ -54,7 +54,7 @@
                      </MenuBar>
                   </top>
                   <center>
-                     <TabPane fx:id="tabPane" focusTraversable="false" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMinHeight="1.0" BorderPane.alignment="CENTER">
+                     <TabPane fx:id="tabPane" focusTraversable="false" styleClass="underlined" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMinHeight="1.0" BorderPane.alignment="CENTER">
                         <tabs>
                            <Tab closable="false" style="-fx-font-size: 26; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" text="Store">
                               <content>

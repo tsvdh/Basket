@@ -46,7 +46,20 @@
                         </Button>
                         <HBox fx:id="installHBox" alignment="CENTER" spacing="20.0" visible="false">
                            <children>
-                              <ProgressBar fx:id="progressBar" focusTraversable="false" prefWidth="200.0" progress="0.0" />
+                              <StackPane prefHeight="150.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox alignment="CENTER">
+                                       <children>
+                                          <ProgressBar fx:id="progressBar" focusTraversable="false" maxWidth="200.0" prefWidth="200.0" progress="0.0" visible="false" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER">
+                                       <children>
+                                          <ProgressBar fx:id="loadingBar" focusTraversable="false" maxWidth="200.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </StackPane>
                               <Label fx:id="progressLabel" style="-fx-font-size: 14;" text="Info">
                                  <font>
                                     <Font size="14.0" />
