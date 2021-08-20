@@ -43,9 +43,9 @@ public class InstallTask extends Task<Void> {
         updateMessage("Setting up");
         updateProgress(0, 1);
 
-        Path appHomePath = Path.of(PathHandler.getAppHomePath(name));
+        Path appHomePath = PathHandler.getAppHomePath(name);
         URL githubURL = makeURL(toGithubAddress(githubHome.toString(), wantedVersion));
-        Path imagePath = Path.of(appHomePath + "/image.zip");
+        Path imagePath = appHomePath.resolve("image.zip");
 
         URLConnection urlConnection;
         OutputStream imageOutStream = null;
@@ -59,14 +59,14 @@ public class InstallTask extends Task<Void> {
 
             // store app info
             ExternalPropertiesHandler infoHandler = new ExternalPropertiesHandler(
-                    appHomePath + "/info.properties", null);
+                    appHomePath.resolve("info.properties"), null);
             infoHandler.setProperty(Info.name, name)
                     .setProperty(Info.current_version, wantedVersion)
                     .setProperty(Info.use_latest, false)
                     .save();
 
             // download icon
-            Files.copy(iconStream, Path.of(appHomePath + "/icon.png"));
+            Files.copy(iconStream, appHomePath.resolve("icon.png"));
 
             // download image
             updateMessage("Downloading");
@@ -108,6 +108,7 @@ public class InstallTask extends Task<Void> {
             try {
                 deletePathAndContent(appHomePath);
             } catch (IOException ignored) {}
+            e.printStackTrace();
         } finally {
             closeQuietly(imageOutStream);
         }
@@ -127,6 +128,4 @@ public class InstallTask extends Task<Void> {
 
         return decimalFormat.format(megaBytes);
     }
-
-
 }

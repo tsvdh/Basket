@@ -25,6 +25,7 @@ import main.Settings;
 import prebuilt.Message;
 
 import static common.FileHandler.deletePathAndContent;
+import static java.lang.Runtime.getRuntime;
 
 public class LibraryItem extends AnchorPane {
 
@@ -46,7 +47,7 @@ public class LibraryItem extends AnchorPane {
         }
 
         this.appName = appName;
-        this.appHomePath = Path.of(PathHandler.getAppHomePath(appName));
+        this.appHomePath = PathHandler.getAppHomePath(appName);
 
         nameLabel.setText(appName);
 
@@ -56,8 +57,7 @@ public class LibraryItem extends AnchorPane {
 
         try {
             ExternalPropertiesHandler infoHandler = new ExternalPropertiesHandler(
-                    appHomePath + "/info.properties", null);
-
+                    appHomePath.resolve("info.properties"), null);
             // set update actions
 
         } catch (IOException e) {
@@ -80,7 +80,34 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void launch() {
+        Path executable = PathHandler.getAppHomePath(appName).resolve("image/bin/" + appName + ".bat");
 
+        if (!Files.exists(executable)) {
+            // TODO: invoke repair
+            launchButton.setDisable(true);
+            new Message("This app is broken", true);
+            return;
+        }
+
+        Process process;
+        try {
+            process = getRuntime().exec(executable.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            new Message("Unable to launch the app", true);
+            return;
+        }
+
+        launchButton.setText("Stop");
+        launchButton.setOnAction(event -> {
+            process.descendants().forEach(ProcessHandle::destroyForcibly);
+            process.destroyForcibly();
+        });
+
+        process.onExit().thenRun(() -> Platform.runLater(() -> {
+            launchButton.setText("Launch");
+            launchButton.setOnAction(event -> launch());
+        }));
     }
 
     @FXML
@@ -113,15 +140,15 @@ public class LibraryItem extends AnchorPane {
             Basket.getInstance().loadLibrary();
         });
 
-        // Delete code. Doesn't matter if this fails, the folder will be deleted at install anyway
+        // Delete app. Doesn't matter if this fails, the folder will be deleted at install anyway
         try {
             deletePathAndContent(appHomePath);
         } catch (IOException ignored) {}
     }
 
     @FXML
-    public ProgressBar progressBar;
+    public Label progressLabel;
 
     @FXML
-    public Label progressLabel;
+    public ProgressBar progressBar;
 }
