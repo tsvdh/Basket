@@ -27,7 +27,6 @@
                            <Menu mnemonicParsing="false" style="-fx-font-size: 14;" text="App">
                               <items>
                                  <MenuItem mnemonicParsing="false" style="-fx-font-size: 14;" text="Check for updates" />
-                                 <MenuItem mnemonicParsing="false" text="Uninstall" />
                                  <SeparatorMenuItem mnemonicParsing="false" />
                                  <CheckMenuItem fx:id="darkModeMenuItem" mnemonicParsing="false" onAction="#swapJMetroTheme" text="Dark mode" />
                                  <SeparatorMenuItem mnemonicParsing="false" />

@@ -58,7 +58,7 @@ public class Basket {
         newSingleThreadExecutor().execute(task);
     }
 
-    public void loadLibrary() {
+    public void loadLibrary() { // TODO: more seamless alternative
         List<Node> items = controller.libraryVBox.getChildren();
         items.clear();
         items.add(newEmbeddedMessage("Loading..."));

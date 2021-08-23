@@ -1,10 +1,10 @@
 package core.library;
 
-import app.BasketApp;
 import common.ExternalPropertiesHandler;
 import common.PathHandler;
 import core.Basket;
-import core.StringQueue;
+import core.InstallTask;
+import db.DocumentHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -21,18 +21,30 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import main.Settings;
+import org.bson.Document;
 import prebuilt.Message;
+import util.Version;
 
 import static common.FileHandler.deletePathAndContent;
 import static java.lang.Runtime.getRuntime;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 public class LibraryItem extends AnchorPane {
 
     private final String appName;
     private final Path appHomePath;
 
-    public LibraryItem(String appName) {
+    private InstallTask stableInstallTask;
+    private InstallTask experimentalInstallTask;
+    private InstallTask currentInstallTask;
+
+    private Version current;
+
+    boolean useExperimentalOldValue;
+
+    public LibraryItem(String appName, Document document) {
         super();
 
         URL url = getClass().getResource("/fxml/library_item.fxml");
@@ -51,22 +63,70 @@ public class LibraryItem extends AnchorPane {
 
         nameLabel.setText(appName);
 
-        try (InputStream in = Files.newInputStream(Path.of(appHomePath + "/icon.png"))) {
+        try (InputStream in = Files.newInputStream(appHomePath.resolve("icon.png"))) {
             icon.setImage(new Image(in));
         } catch (IOException ignored) {}
 
-        try {
-            ExternalPropertiesHandler infoHandler = new ExternalPropertiesHandler(
-                    appHomePath.resolve("info.properties"), null);
-            // set update actions
-
-        } catch (IOException e) {
+        if (document == null) {
             updateButton.setDisable(true);
             useExperimentalButton.setDisable(true);
-            new Message("A file is in use for " + appName + ", updating disabled", true);
+            return;
         }
 
-        // set launch
+        DocumentHelper documentHelper = new DocumentHelper(document);
+
+        ExternalPropertiesHandler infoHandler;
+
+        try {
+            infoHandler = new ExternalPropertiesHandler(
+                    appHomePath.resolve("info.properties"), null);
+
+            if (!appName.equals(documentHelper.getName())) {
+                throw new RuntimeException("Wrong document");
+            }
+
+            Version stable = documentHelper.getStableVersion();
+            Version experimental = documentHelper.getExperimentalVersion();
+
+            URL iconURL = documentHelper.getIconURL();
+            URL githubHome = documentHelper.getGithubHome();
+
+            this.stableInstallTask = new InstallTask(appName, iconURL, githubHome, stable,
+                    false, true);
+            this.experimentalInstallTask = new InstallTask(appName, iconURL, githubHome, experimental,
+                    true, true);
+        }
+        catch (IOException | RuntimeException e) {
+            new Message(e.getMessage() + ", updating disabled for " + appName, true);
+            updateButton.setDisable(true);
+            useExperimentalButton.setDisable(true);
+            return;
+        }
+
+        current = (Version) infoHandler.getProperty(AppInfo.current_version);
+
+        useExperimentalOldValue = (boolean) infoHandler.getProperty(AppInfo.use_experimental);
+        useExperimentalButton.setSelected(useExperimentalOldValue);
+
+        if (useExperimentalOldValue) {
+            this.currentInstallTask = experimentalInstallTask;
+        } else {
+            this.currentInstallTask = stableInstallTask;
+        }
+
+        setUpdateButton();
+    }
+
+    public void setUpdateButton() {
+        // switching type of version, so update should always be allowed
+        if (useExperimentalOldValue != useExperimentalButton.isSelected()) {
+            updateButton.setDisable(false);
+        }
+        // regular update, allowed if version is newer
+        else {
+            boolean isNewer = currentInstallTask.getWantedVersion().compareTo(current) > 0;
+            updateButton.setDisable(!isNewer);
+        }
     }
 
     @FXML
@@ -115,7 +175,23 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void update() {
+        currentInstallTask.bindBars(progressBar, loadingBar);
 
+        progressLabel.textProperty().bind(currentInstallTask.messageProperty());
+
+        controlHBox.setVisible(false);
+        installHBox.setVisible(true);
+
+        currentInstallTask.setOnSucceeded(event -> {
+            controlHBox.setVisible(true);
+            installHBox.setVisible(false);
+
+            if (currentInstallTask.getValue()) {
+                Basket.getInstance().loadLibrary();
+            }
+        });
+
+        newSingleThreadExecutor().execute(currentInstallTask);
     }
 
     @FXML
@@ -123,21 +199,29 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void swapVersion() {
-
+        if (currentInstallTask == stableInstallTask) {
+            currentInstallTask = experimentalInstallTask;
+        } else {
+            currentInstallTask = stableInstallTask;
+        }
+        setUpdateButton();
+        updateButton.fire();
     }
 
     @FXML
     public void remove() {
         // un-register app
-        ExternalPropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
-        StringQueue strings = (StringQueue) settingsHandler.getProperty(Settings.installed_apps);
-        strings.remove(appName);
-        settingsHandler.setProperty(Settings.installed_apps, strings);
+        try {
+            Settings.removeApp(appName);
+        } catch (IOException e) {
+            new Message(e.getMessage(), true);
+            return;
+        }
 
         // refresh store and library
         Platform.runLater(() -> {
             Basket.getInstance().loadStore();
-            Basket.getInstance().loadLibrary();
+            Basket.getInstance().controller.libraryVBox.getChildren().remove(this);
         });
 
         // Delete app. Doesn't matter if this fails, the folder will be deleted at install anyway
@@ -147,8 +231,17 @@ public class LibraryItem extends AnchorPane {
     }
 
     @FXML
+    public HBox controlHBox;
+
+    @FXML
+    public HBox installHBox;
+
+    @FXML
     public Label progressLabel;
 
     @FXML
     public ProgressBar progressBar;
+
+    @FXML
+    public ProgressBar loadingBar;
 }

@@ -4,6 +4,7 @@ import app.BasketApp;
 import core.Basket;
 import core.InstallTask;
 import core.StringQueue;
+import db.DocumentHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -20,12 +21,8 @@ import main.Settings;
 import org.bson.Document;
 import prebuilt.Message;
 import util.Version;
-import util.url.BadURLException;
 
-import static java.lang.Math.signum;
-import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
-import static util.url.URLConstructor.makeURL;
 
 public class StoreItem extends AnchorPane {
 
@@ -48,15 +45,12 @@ public class StoreItem extends AnchorPane {
 
         this.valid = true;
 
+        DocumentHelper documentHelper = new DocumentHelper(document);
         try {
-            nameLabel.setText(requireNonNull(document.getString("name")));
-            descriptionLabel.setText(requireNonNull(document.getString("description")));
+            nameLabel.setText(documentHelper.getName());
+            descriptionLabel.setText(documentHelper.getDescription());
 
-            String iconAddress = requireNonNull(document.getString("icon_address"));
-            if (!iconAddress.endsWith(".png")) {
-                throw new BadURLException();
-            }
-            URL iconURL = makeURL(iconAddress);
+            URL iconURL = documentHelper.getIconURL();
 
             try (InputStream in = iconURL.openStream()) {
                 icon.setImage(new Image(in));
@@ -69,12 +63,12 @@ public class StoreItem extends AnchorPane {
                 return;
             }
 
-            URL githubHome = makeURL(requireNonNull(document.getString("github_home")));
+            URL githubHome = documentHelper.getGithubHome();
 
-            Document versions = (Document) document.get("versions");
-            Version stable = Version.of(versions.getString("stable"));
+            Version stable = documentHelper.getStableVersion();
 
-            installTask = new InstallTask(nameLabel.getText(), iconURL, githubHome, stable);
+            installTask = new InstallTask(nameLabel.getText(), iconURL, githubHome, stable,
+                    false, false);
 
         } // an exception indicates a bad entry in the database, so they are not added to the store
         catch (RuntimeException e) { // TODO: add some kind of alert for dev/admin
@@ -105,19 +99,8 @@ public class StoreItem extends AnchorPane {
 
     @FXML
     public void install() {
-        installTask.progressProperty().addListener((observable, oldValue, newValue) -> {
+        installTask.bindBars(progressBar, loadingBar);
 
-            if (signum(oldValue.floatValue()) == signum(newValue.floatValue())) {
-                return; // no change as same bar should be kept
-            }
-
-            boolean loading = newValue.floatValue() == -1;
-
-            loadingBar.setVisible(loading);
-            progressBar.setVisible(!loading);
-        });
-
-        progressBar.progressProperty().bind(installTask.progressProperty());
         progressLabel.textProperty().bind(installTask.messageProperty());
 
         installButton.setVisible(false);
@@ -127,14 +110,14 @@ public class StoreItem extends AnchorPane {
             installButton.setVisible(true);
             installHBox.setVisible(false);
 
-            if (installed()) {
+
+            if (installTask.getValue()) {
                 installButton.setDisable(true);
                 installButton.setText("Installed");
+                Basket.getInstance().loadLibrary();
             } else {
                 new Message("Could not install app", true);
             }
-
-            Basket.getInstance().loadLibrary();
         });
 
         newSingleThreadExecutor().execute(installTask);
