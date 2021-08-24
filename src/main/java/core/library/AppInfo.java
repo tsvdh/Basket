@@ -7,7 +7,7 @@ import util.Version;
 public enum AppInfo implements Property {
 
     name(String::valueOf),
-    current_version(Version::of),
+    current_version(Version::parse),
     use_experimental(Boolean::parseBoolean);
 
     private final Function<String, Object> parser;

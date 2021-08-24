@@ -36,9 +36,9 @@ public record DocumentHelper(Document document) {
     }
 
     public Version getStableVersion() {
-        return Version.of(requireNonNull(getVersionDocument().getString("stable")));
+        return Version.parse(requireNonNull(getVersionDocument().getString("stable")));
     }
     public Version getExperimentalVersion() {
-        return Version.of(requireNonNull(getVersionDocument().getString("experimental")));
+        return Version.parse(requireNonNull(getVersionDocument().getString("experimental")));
     }
 }

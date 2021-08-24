@@ -58,7 +58,7 @@
                               </MenuButton>
                            </children>
                         </HBox>
-                        <HBox fx:id="installHbox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" visible="false">
+                        <HBox fx:id="installHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" visible="false">
                            <children>
                               <StackPane>
                                  <children>

@@ -13,7 +13,7 @@ public enum Settings implements Property {
 
     jmetro_style(Style::valueOf),
     installed_apps(StringQueue::parse),
-    current_version(Version::of);
+    current_version(Version::parse);
 
     private final Function<String, Object> parser;
 
