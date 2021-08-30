@@ -5,28 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.tsvdh</groupId>
-    <artifactId>Basket</artifactId>
+    <artifactId>basket</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>properties/*</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <excludes>
-                    <exclude>properties/*</exclude>
-                </excludes>
-            </resource>
-        </resources>
-    </build>
 
     <properties>
         <java.version>16</java.version>
@@ -40,13 +21,13 @@
         <dependency>
             <groupId>com.github.tsvdh</groupId>
             <artifactId>basket-api</artifactId>
-            <version>0.2.6</version>
+            <version>0.2.7</version>
         </dependency>
 
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>4.3.1</version>
         </dependency>
 
         <dependency>
@@ -116,16 +97,272 @@
 <!--        </dependency>-->
 
         <!-- logging -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.14.1</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.5</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ch.qos.logback</groupId>-->
+<!--            <artifactId>logback-classic</artifactId>-->
+<!--            <version>1.2.5</version>-->
+<!--        </dependency>-->
     </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>properties/*</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>properties/*</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>skinny-jar</id>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${project.build.directory}\modules</outputDirectory>
+                    <archive>
+                        <manifest>
+                            <mainClass>main.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.github.tsvdh</groupId>
+                                    <artifactId>basket-api</artifactId>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>net.java.dev.jna</groupId>
+                                    <artifactId>jna-jpms</artifactId>
+                                    <version>5.8.0</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>net.java.dev.jna</groupId>
+                                    <artifactId>jna-platform-jpms</artifactId>
+                                    <version>5.8.0</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.controlsfx</groupId>
+                                    <artifactId>controlsfx</artifactId>
+                                    <version>11.0.0</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jetbrains</groupId>
+                                    <artifactId>annotations</artifactId>
+                                    <version>22.0.0</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jfxtras</groupId>
+                                    <artifactId>jmetro</artifactId>
+                                    <version>11.6.15</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}\modules</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy-javafx</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}\modules\javafx</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                            <includeArtifactIds>javafx-base, javafx-controls, javafx-fxml, javafx-graphics, javafx-media, javafx-web</includeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <version>1.0.0.RC1</version>
+                <configuration>
+                    <overwriteExistingFiles>true</overwriteExistingFiles>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>add-module-info-to-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <jdepsExtraArgs>--ignore-missing-deps</jdepsExtraArgs>
+                            <modules>
+<!--                                <module>-->
+<!--                                    <artifact>-->
+<!--                                        <groupId>ch.qos.logback</groupId>-->
+<!--                                        <artifactId>logback-classic</artifactId>-->
+<!--                                    </artifact>-->
+<!--                                    <moduleInfo>-->
+<!--                                        <name>logback.classic</name>-->
+<!--                                    </moduleInfo>-->
+<!--                                </module>-->
+
+<!--                                <module>-->
+<!--                                    <artifact>-->
+<!--                                        <groupId>ch.qos.logback</groupId>-->
+<!--                                        <artifactId>logback-core</artifactId>-->
+<!--                                    </artifact>-->
+<!--                                    <moduleInfo>-->
+<!--                                        <name>logback.core</name>-->
+<!--                                    </moduleInfo>-->
+<!--                                </module>-->
+
+                                <module>
+                                    <artifact>
+                                        <groupId>commons-io</groupId>
+                                        <artifactId>commons-io</artifactId>
+                                    </artifact>
+                                    <moduleInfo>
+                                        <name>org.apache.commons.io</name>
+                                    </moduleInfo>
+                                </module>
+
+                                <module>
+                                    <artifact>
+                                        <groupId>net.lingala.zip4j</groupId>
+                                        <artifactId>zip4j</artifactId>
+                                    </artifact>
+                                    <moduleInfo>
+                                        <name>zip4j</name>
+                                    </moduleInfo>
+                                </module>
+
+                                <module>
+                                    <artifact>
+                                        <groupId>org.mongodb</groupId>
+                                        <artifactId>bson</artifactId>
+                                    </artifact>
+                                    <moduleInfo>
+                                        <name>org.mongodb.bson</name>
+                                    </moduleInfo>
+                                </module>
+
+                                <module>
+                                    <artifact>
+                                        <groupId>org.mongodb</groupId>
+                                        <artifactId>mongodb-driver-core</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module org.mongodb.driver.core {
+                                        requires org.mongodb.bson;
+                                        exports com.mongodb;
+                                        exports com.mongodb.annotations;
+                                        exports com.mongodb.assertions;
+                                        exports com.mongodb.bulk;
+                                        exports com.mongodb.client.gridfs.codecs;
+                                        exports com.mongodb.client.gridfs.model;
+                                        exports com.mongodb.client.model;
+                                        exports com.mongodb.client.model.changestream;
+                                        exports com.mongodb.client.model.geojson;
+                                        exports com.mongodb.client.model.geojson.codecs;
+                                        exports com.mongodb.client.model.vault;
+                                        exports com.mongodb.client.result;
+                                        exports com.mongodb.connection;
+                                        exports com.mongodb.connection.netty;
+                                        exports com.mongodb.diagnostics.logging;
+                                        exports com.mongodb.event;
+                                        exports com.mongodb.lang;
+                                        exports com.mongodb.management;
+                                        exports com.mongodb.selector;
+                                        exports com.mongodb.session;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+
+                                <module>
+                                    <artifact>
+                                        <groupId>org.mongodb</groupId>
+                                        <artifactId>mongodb-driver-sync</artifactId>
+                                    </artifact>
+                                    <moduleInfo>
+                                        <name>org.mongodb.driver.sync.client</name>
+                                    </moduleInfo>
+                                </module>
+
+<!--                                <module>-->
+<!--                                    <artifact>-->
+<!--                                        <groupId>org.slf4j</groupId>-->
+<!--                                        <artifactId>slf4j-api</artifactId>-->
+<!--                                    </artifact>-->
+<!--                                    <moduleInfo>-->
+<!--                                        <name>org.slf4j</name>-->
+<!--                                    </moduleInfo>-->
+<!--                                </module>-->
+                            </modules>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>create-runtime-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>create-runtime-image</goal>
+                        </goals>
+                        <configuration>
+                            <modulePath>
+                                <path>${project.build.directory}\modules</path>
+                                <path>${project.build.directory}\modules\javafx</path>
+                            </modulePath>
+                            <modules>
+                                <module>${project.artifactId}</module>
+                            </modules>
+                            <outputDirectory>${project.build.directory}\image</outputDirectory>
+                            <launcher>
+                                <name>Basket</name>
+                                <module>${project.artifactId}</module>
+                            </launcher>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
 
 </project>

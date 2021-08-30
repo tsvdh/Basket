@@ -1,3 +1,5 @@
-no paths as strings
+smooth store replacing
 
-loading animation
+app usage info
+
+auto update

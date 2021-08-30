@@ -1,15 +1,11 @@
 package db;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.lang.Nullable;
 import org.bson.Document;
-import org.slf4j.LoggerFactory;
 
 public class DBConnection {
 
@@ -25,9 +21,9 @@ public class DBConnection {
 
     private DBConnection() {
         // disable unimportant logging
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        Logger rootLogger = loggerContext.getLogger("org.mongodb.driver");
-        rootLogger.setLevel(Level.WARN);
+        // LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        // Logger rootLogger = loggerContext.getLogger("org.mongodb.driver");
+        // rootLogger.setLevel(Level.WARN);
 
         this.connect();
     }

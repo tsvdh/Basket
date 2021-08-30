@@ -95,7 +95,7 @@ public class InstallTask extends Task<Boolean> {
         OutputStream imageOutStream = null;
         try (
                 InputStream iconStream = iconURL.openStream();
-                InputStream imageInStream = (urlConnection = githubURL.openConnection()).getInputStream();
+                InputStream imageInStream = (urlConnection = githubURL.openConnection()).getInputStream()
         ) {
             // create or clean app directory
             deletePathAndContent(appHomePath);
