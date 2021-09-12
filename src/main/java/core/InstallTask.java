@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.ProgressBar;
 import main.Settings;
@@ -90,12 +91,14 @@ public class InstallTask extends Task<Boolean> {
             }
         }
 
-        URLConnection urlConnection;
+        InputStream iconStream = null;
+        InputStream imageInStream = null;
         OutputStream imageOutStream = null;
-        try (
-                InputStream iconStream = iconURL.openStream();
-                InputStream imageInStream = (urlConnection = githubURL.openConnection()).getInputStream()
-        ) {
+        try {
+            URLConnection urlConnection = githubURL.openConnection();
+            iconStream = iconURL.openStream();
+            imageInStream = urlConnection.getInputStream();
+
             // create or clean app directory
             deletePathAndContent(appHomePath);
             Files.createDirectory(appHomePath);
@@ -148,23 +151,23 @@ public class InstallTask extends Task<Boolean> {
         }
         catch (IOException | RuntimeException e) {
             if (!update) {
-                new Message("Install failed: " + e.getMessage(), true);
+                Platform.runLater(() -> new Message("Install failed: " + e.getMessage(), true));
                 try {
                     deletePathAndContent(appHomePath);
                 } catch (IOException ignored) {}
             } else {
                 updateMessage("Restoring");
-                new Message("Update failed: " + e.getMessage(), true);
+                Platform.runLater(() -> new Message("Update failed: " + e.getMessage(), true));
                 try {
                     copyPathAndContent(backupPath, appHomePath);
                 } catch (IOException backupFail) {
                     try {
-                        new Message("Backup failed: " + e.getMessage(), true);
+                        Platform.runLater(() -> new Message("Backup failed: " + e.getMessage(), true));
                         Settings.removeApp(appName);
                         // TODO: remove from GUI
                     } catch (IOException fatal) {
-                        new Message(fatal.getMessage() + ", " + appName
-                                + " is broken. Try to remove the app later", true);
+                        Platform.runLater(() -> new Message(fatal.getMessage() + ", " + appName
+                                + " is broken. Try to remove the app later", true));
                     }
                 }
                 try {
@@ -172,7 +175,10 @@ public class InstallTask extends Task<Boolean> {
                 } catch (IOException ignored) {}
             }
             return false;
-        } finally {
+        }
+        finally {
+            closeQuietly(iconStream);
+            closeQuietly(imageInStream);
             closeQuietly(imageOutStream);
         }
 

@@ -1,6 +1,5 @@
 package core;
 
-import basket.api.prebuilt.Message;
 import core.library.LibraryLoadTask;
 import core.store.StoreLoadTask;
 import java.io.IOException;
@@ -47,20 +46,20 @@ public class Basket {
 
         loadStore();
         loadLibrary();
-
-        new Message("hello", true);
-        new Thread(() -> Platform.runLater(() -> new Message("hello", true))).start();
     }
 
     public void loadStore() {
         List<Node> items = controller.storeVBox.getChildren();
         items.clear();
-        items.add(newEmbeddedLoadingMessage(null));
+        items.add(newEmbeddedMessage("Loading..."));
 
-        Platform.runLater(() -> {
+        newSingleThreadExecutor().execute(() -> {
             try {
                 if (ServerHandler.serverSleeping()) {
-                    items.add(newEmbeddedLoadingMessage("Server is starting, please wait a few moments"));
+                    Platform.runLater(() -> {
+                        items.clear();
+                        items.add(newEmbeddedLoadingMessage("Server is starting, please wait a moment"));
+                    });
                 }
             } catch (ServerConnectionException ignored) {
                 // No need to display error here, as that is done by the store load task

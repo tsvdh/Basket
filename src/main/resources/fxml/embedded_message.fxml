@@ -11,21 +11,21 @@
 
 <fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="CENTER" layoutY="-181.0" prefHeight="0.0" prefWidth="159.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="CENTER" layoutY="-181.0" prefHeight="250.0" prefWidth="500.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <StackPane>
                <children>
                   <ProgressBar fx:id="loadingIndicator" focusTraversable="false" maxWidth="300.0" visible="false" />
-                  <Label fx:id="messageLabel" focusTraversable="false" style="-fx-font-size: 18;" text="Message" visible="false">
+                  <Label fx:id="messageLabel" focusTraversable="false" prefHeight="60.0" style="-fx-font-size: 18;" text="Message" textAlignment="CENTER" visible="false" wrapText="true">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
                </children>
             </StackPane>
-            <StackPane prefHeight="150.0" prefWidth="200.0">
+            <StackPane>
                <children>
-                  <Label fx:id="loadingMessageLabel" focusTraversable="false" style="-fx-font-size: 18;" text="Loading message" visible="false">
+                  <Label fx:id="loadingMessageLabel" focusTraversable="false" prefHeight="60.0" style="-fx-font-size: 18;" text="Loading message" textAlignment="CENTER" visible="false" wrapText="true">
                      <font>
                         <Font size="18.0" />
                      </font>
