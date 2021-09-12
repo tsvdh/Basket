@@ -25,8 +25,8 @@ public class App {
                @JsonProperty("description") String description,
                @JsonProperty("stable") String stable,
                @JsonProperty("experimental") String experimental,
-               @JsonProperty("iconAddress") URL iconAddress,
-               @JsonProperty("githubHome") URL githubHome) {
+               @JsonProperty("icon_address") URL iconAddress,
+               @JsonProperty("github_home") URL githubHome) {
         this.id = id;
         this.name = name;
         this.description = description;

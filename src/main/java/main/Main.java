@@ -15,12 +15,6 @@ public class Main extends Application {
         public void start() {
             //noinspection ResultOfMethodCallIgnored
             Basket.getInstance();
-            // try {
-            //     System.out.println(Class.forName("org.slf4j.Logger"));
-            // } catch (ClassNotFoundException e) {
-            //     e.printStackTrace();
-            // }
-            // System.exit(0);
         }
 
         @Override
