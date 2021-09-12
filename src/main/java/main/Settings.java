@@ -1,13 +1,13 @@
 package main;
 
-import app.BasketApp;
-import app.Property;
-import common.ExternalPropertiesHandler;
+import basket.api.app.BasketApp;
+import basket.api.app.Property;
+import basket.api.common.ExternalPropertiesHandler;
+import basket.api.util.Version;
 import core.StringQueue;
 import java.io.IOException;
 import java.util.function.Function;
 import jfxtras.styles.jmetro.Style;
-import util.Version;
 
 public enum Settings implements Property {
 

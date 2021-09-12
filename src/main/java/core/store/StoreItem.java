@@ -1,10 +1,11 @@
 package core.store;
 
-import app.BasketApp;
+import basket.api.app.BasketApp;
+import basket.api.util.Version;
+import core.App;
 import core.Basket;
 import core.InstallTask;
 import core.StringQueue;
-import db.DocumentHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -18,18 +19,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import main.Settings;
-import org.bson.Document;
-import prebuilt.Message;
-import util.Version;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 public class StoreItem extends AnchorPane {
 
-    private boolean valid;
     private InstallTask installTask;
 
-    public StoreItem(Document document) {
+    public StoreItem(App app) {
         super();
 
         URL fxml_url = getClass().getResource("/fxml/store_item.fxml");
@@ -43,41 +40,28 @@ public class StoreItem extends AnchorPane {
             throw new RuntimeException(e);
         }
 
-        this.valid = true;
+        nameLabel.setText(app.getName());
+        descriptionLabel.setText(app.getDescription());
 
-        DocumentHelper documentHelper = new DocumentHelper(document);
-        try {
-            nameLabel.setText(documentHelper.getName());
-            descriptionLabel.setText(documentHelper.getDescription());
+        URL url = app.getIconAddress();
 
-            URL iconURL = documentHelper.getIconURL();
-
-            try (InputStream in = iconURL.openStream()) {
-                icon.setImage(new Image(in));
-            }
-            catch (IOException ignored) {}
-
-            if (installed()) {
-                installButton.setDisable(true);
-                installButton.setText("Installed");
-                return;
-            }
-
-            URL githubHome = documentHelper.getGithubHome();
-
-            Version stable = documentHelper.getStableVersion();
-
-            installTask = new InstallTask(nameLabel.getText(), iconURL, githubHome, stable,
-                    false, false);
-
-        } // an exception indicates a bad entry in the database, so they are not added to the store
-        catch (RuntimeException e) { // TODO: add some kind of alert for dev/admin
-            this.valid = false;
+        try (InputStream in = url.openStream()) {
+            icon.setImage(new Image(in));
         }
-    }
+        catch (IOException ignored) {}
 
-    boolean isValid() {
-        return valid;
+        if (installed()) {
+            installButton.setDisable(true);
+            installButton.setText("Installed");
+            return;
+        }
+
+        URL githubHome = app.getGithubHome();
+
+        Version stable = app.getStable();
+
+        installTask = new InstallTask(app.getName(), url, githubHome, stable,
+                false, false);
     }
 
     private boolean installed() {
@@ -115,8 +99,6 @@ public class StoreItem extends AnchorPane {
                 installButton.setDisable(true);
                 installButton.setText("Installed");
                 Basket.getInstance().loadLibrary();
-            } else {
-                new Message("Could not install app", true);
             }
         });
 

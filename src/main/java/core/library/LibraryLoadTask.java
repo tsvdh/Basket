@@ -1,65 +1,53 @@
 package core.library;
 
-import app.BasketApp;
-import com.mongodb.lang.Nullable;
-import common.ExternalPropertiesHandler;
+import basket.api.app.BasketApp;
+import basket.api.common.ExternalPropertiesHandler;
+import core.App;
 import core.StringQueue;
-import db.DBConnectException;
-import db.DBConnection;
-import db.DocumentHelper;
 import java.util.LinkedList;
 import java.util.List;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 import main.Settings;
-import org.bson.Document;
+import server.ServerConnectionException;
+import server.ServerHandler;
 
 import static core.EmbeddedMessage.newEmbeddedMessage;
 import static java.util.Collections.singletonList;
+import static java.util.Comparator.comparing;
 
 public class LibraryLoadTask extends Task<List<Node>> {
 
     @Override
     protected List<Node> call() {
         ExternalPropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
-        StringQueue installed = (StringQueue) settingsHandler.getProperty(Settings.installed_apps);
+        StringQueue installedNames = (StringQueue) settingsHandler.getProperty(Settings.installed_apps);
 
-        if (installed.isEmpty()) {
+        if (installedNames.isEmpty()) {
             return singletonList(newEmbeddedMessage("No apps installed"));
         }
 
-        Iterable<Document> documents;
+        List<App> installedApps;
         try {
-            documents = DBConnection.getInstance().getAppInfo();
-        } catch (DBConnectException e) {
-            documents = null;
+            installedApps = ServerHandler.getLibraryApps(installedNames);
+            installedApps.sort(comparing(App::getName));
+        } catch (ServerConnectionException e) {
+            installedApps = null;
         }
 
         List<Node> items = new LinkedList<>();
 
-        for (String appName : installed) {
-            Document matchingDocument = getDocument(documents, appName);
-            items.add(new LibraryItem(appName, matchingDocument));
+        for (String name : installedNames) {
+            App app;
+            if (installedApps == null) {
+                app = null;
+            } else {
+                app = installedApps.remove(0);
+            }
+
+            items.add(new LibraryItem(name, app));
         }
 
         return items;
-    }
-
-    private @Nullable Document getDocument(Iterable<Document> documents, String name) {
-        if (documents == null) {
-            return null;
-        }
-
-        for (Document document : documents) {
-            try {
-                String documentName = new DocumentHelper(document).getName();
-                if (documentName.equals(name)) {
-                    return document;
-                }
-            } catch (RuntimeException e) {
-                // ignore bad DB entry
-            }
-        }
-        return null;
     }
 }

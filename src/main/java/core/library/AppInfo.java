@@ -1,8 +1,8 @@
 package core.library;
 
-import app.Property;
+import basket.api.app.Property;
+import basket.api.util.Version;
 import java.util.function.Function;
-import util.Version;
 
 public enum AppInfo implements Property {
 

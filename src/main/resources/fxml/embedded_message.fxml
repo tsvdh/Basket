@@ -11,23 +11,32 @@
 
 <fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="CENTER" layoutY="-181.0" prefHeight="0.0" prefWidth="137.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="CENTER" layoutY="-181.0" prefHeight="0.0" prefWidth="159.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <StackPane>
                <children>
                   <ProgressBar fx:id="loadingIndicator" focusTraversable="false" maxWidth="300.0" visible="false" />
-                  <Label fx:id="messageLabel" focusTraversable="false" style="-fx-font-size: 18;" text="Message">
+                  <Label fx:id="messageLabel" focusTraversable="false" style="-fx-font-size: 18;" text="Message" visible="false">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
                </children>
             </StackPane>
-            <Button fx:id="retryButton" focusTraversable="false" mnemonicParsing="false" text="Retry">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
+            <StackPane prefHeight="150.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="loadingMessageLabel" focusTraversable="false" style="-fx-font-size: 18;" text="Loading message" visible="false">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="retryButton" focusTraversable="false" mnemonicParsing="false" text="Retry" visible="false">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+               </children>
+            </StackPane>
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="50.0" />

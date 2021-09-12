@@ -21,19 +21,13 @@
         <dependency>
             <groupId>com.github.tsvdh</groupId>
             <artifactId>basket-api</artifactId>
-            <version>0.2.7</version>
+            <version>0.3.6</version>
         </dependency>
 
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.3.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.12.10</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.12.5</version>
         </dependency>
 
         <dependency>
@@ -48,8 +42,14 @@
             <version>2.11.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+        </dependency>
 
-        <!-- temp for dev with local jar -->
+
+        <!-- for dev with local jar -->
 <!--        <dependency>-->
 <!--            <groupId>org.jetbrains</groupId>-->
 <!--            <artifactId>annotations</artifactId>-->
@@ -65,6 +65,12 @@
 <!--        <dependency>-->
 <!--            <groupId>org.openjfx</groupId>-->
 <!--            <artifactId>javafx-web</artifactId>-->
+<!--            <version>${javafx.version}</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.openjfx</groupId>-->
+<!--            <artifactId>javafx-fxml</artifactId>-->
 <!--            <version>${javafx.version}</version>-->
 <!--        </dependency>-->
 
@@ -94,13 +100,6 @@
 <!--                    <artifactId>javafx-web</artifactId>-->
 <!--                </exclusion>-->
 <!--            </exclusions>-->
-<!--        </dependency>-->
-
-        <!-- logging -->
-<!--        <dependency>-->
-<!--            <groupId>ch.qos.logback</groupId>-->
-<!--            <artifactId>logback-classic</artifactId>-->
-<!--            <version>1.2.5</version>-->
 <!--        </dependency>-->
     </dependencies>
 
@@ -132,6 +131,101 @@
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+                <executions>
+                    <execution>
+                        <id>install-bson</id>
+                        <goals><goal>install-file</goal></goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>org.mongodb</groupId>
+                            <artifactId>bson</artifactId>
+                            <version>4.3.1</version>
+                            <packaging>jar</packaging>
+                            <file>C:\Users\tsvdh\.m2\custom_deps\bson-4.3.1.jar</file>
+                            <generatePom>false</generatePom>
+                            <pomFile>C:\Users\tsvdh\.m2\custom_deps\bson-pom.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+<!--                    <execution>-->
+<!--                        <id>install-groovy</id>-->
+<!--                        <goals><goal>install-file</goal></goals>-->
+<!--                        <phase>validate</phase>-->
+<!--                        <configuration>-->
+<!--                            <groupId>org.codehaus.groovy</groupId>-->
+<!--                            <artifactId>groovy-all</artifactId>-->
+<!--                            <version>2.0.7</version>-->
+<!--                            <packaging>jar</packaging>-->
+<!--                            <file>C:\Users\tsvdh\.m2\custom_deps\groovy-all-2.0.7.jar</file>-->
+<!--                            <generatePom>true</generatePom>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+
+                    <execution>
+                        <id>install-groovy</id>
+                        <goals><goal>install-file</goal></goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>org.codehaus.groovy</groupId>
+                            <artifactId>groovy</artifactId>
+                            <version>2.4.0</version>
+                            <packaging>jar</packaging>
+                            <file>C:\Users\tsvdh\.m2\custom_deps\groovy-2.4.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-logback-classic</id>
+                        <goals><goal>install-file</goal></goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>ch.qos.logback</groupId>
+                            <artifactId>logback-classic</artifactId>
+                            <version>1.1.2</version>
+                            <packaging>jar</packaging>
+                            <file>C:\Users\tsvdh\.m2\custom_deps\logback-classic-1.1.2.jar</file>
+                            <generatePom>false</generatePom>
+                            <pomFile>C:\Users\tsvdh\.m2\custom_deps\logback-classic-pom.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-logback-core</id>
+                        <goals><goal>install-file</goal></goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>ch.qos.logback</groupId>
+                            <artifactId>logback-core</artifactId>
+                            <version>1.1.2</version>
+                            <packaging>jar</packaging>
+                            <file>C:\Users\tsvdh\.m2\custom_deps\logback-core-1.1.2.jar</file>
+                            <generatePom>false</generatePom>
+                            <pomFile>C:\Users\tsvdh\.m2\custom_deps\logback-core-pom.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-mongodb-driver-core</id>
+                        <goals><goal>install-file</goal></goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>org.mongodb</groupId>
+                            <artifactId>mongodb-driver-core</artifactId>
+                            <version>4.3.1</version>
+                            <packaging>jar</packaging>
+                            <file>C:\Users\tsvdh\.m2\custom_deps\mongodb-driver-core-4.3.1.jar</file>
+                            <generatePom>false</generatePom>
+                            <pomFile>C:\Users\tsvdh\.m2\custom_deps\mongodb-driver-core-pom.xml</pomFile>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -231,7 +325,10 @@
                             <goal>add-module-info</goal>
                         </goals>
                         <configuration>
-                            <jdepsExtraArgs>--ignore-missing-deps</jdepsExtraArgs>
+                            <jdepsExtraArgs>
+<!--                                <arg>&#45;&#45;multi-release=9</arg>-->
+<!--                                <arg>&#45;&#45;ignore-missing-deps</arg>-->
+                            </jdepsExtraArgs>
                             <modules>
 <!--                                <module>-->
 <!--                                    <artifact>-->
@@ -273,65 +370,63 @@
                                     </moduleInfo>
                                 </module>
 
-                                <module>
-                                    <artifact>
-                                        <groupId>org.mongodb</groupId>
-                                        <artifactId>bson</artifactId>
-                                    </artifact>
-                                    <moduleInfo>
-                                        <name>org.mongodb.bson</name>
-                                    </moduleInfo>
-                                </module>
+<!--                                <module>-->
+<!--                                    <artifact>-->
+<!--                                        <groupId>org.codehaus.groovy</groupId>-->
+<!--                                        <artifactId>groovy</artifactId>-->
+<!--                                    </artifact>-->
+<!--                                    <moduleInfo>-->
+<!--                                        <name>groovy</name>-->
+<!--                                    </moduleInfo>-->
+<!--                                </module>-->
+
+<!--                                <module>-->
+<!--                                    <artifact>-->
+<!--                                        <groupId>org.mongodb</groupId>-->
+<!--                                        <artifactId>bson</artifactId>-->
+<!--                                    </artifact>-->
+<!--                                    <moduleInfo>-->
+<!--                                        <name>org.mongodb.bson</name>-->
+<!--                                    </moduleInfo>-->
+<!--                                </module>-->
+
+<!--                                <module>-->
+<!--                                    <artifact>-->
+<!--                                        <groupId>org.mongodb</groupId>-->
+<!--                                        <artifactId>mongodb-driver-core</artifactId>-->
+<!--                                    </artifact>-->
+<!--                                    <moduleInfo>-->
+<!--                                        <name>org.mongodb.driver.core</name>-->
+<!--                                    </moduleInfo>-->
+<!--                                </module>-->
+
+<!--                                <module>-->
+<!--                                    <artifact>-->
+<!--                                        <groupId>org.mongodb</groupId>-->
+<!--                                        <artifactId>mongodb-driver-sync</artifactId>-->
+<!--                                    </artifact>-->
+<!--                                    <moduleInfo>-->
+<!--                                        <name>org.mongodb.driver.sync.client</name>-->
+<!--                                    </moduleInfo>-->
+<!--                                </module>-->
 
                                 <module>
                                     <artifact>
-                                        <groupId>org.mongodb</groupId>
-                                        <artifactId>mongodb-driver-core</artifactId>
-                                    </artifact>
-                                    <moduleInfoSource>
-                                        module org.mongodb.driver.core {
-                                        requires org.mongodb.bson;
-                                        exports com.mongodb;
-                                        exports com.mongodb.annotations;
-                                        exports com.mongodb.assertions;
-                                        exports com.mongodb.bulk;
-                                        exports com.mongodb.client.gridfs.codecs;
-                                        exports com.mongodb.client.gridfs.model;
-                                        exports com.mongodb.client.model;
-                                        exports com.mongodb.client.model.changestream;
-                                        exports com.mongodb.client.model.geojson;
-                                        exports com.mongodb.client.model.geojson.codecs;
-                                        exports com.mongodb.client.model.vault;
-                                        exports com.mongodb.client.result;
-                                        exports com.mongodb.connection;
-                                        exports com.mongodb.connection.netty;
-                                        exports com.mongodb.diagnostics.logging;
-                                        exports com.mongodb.event;
-                                        exports com.mongodb.lang;
-                                        exports com.mongodb.management;
-                                        exports com.mongodb.selector;
-                                        exports com.mongodb.session;
-                                        }
-                                    </moduleInfoSource>
-                                </module>
-
-                                <module>
-                                    <artifact>
-                                        <groupId>org.mongodb</groupId>
-                                        <artifactId>mongodb-driver-sync</artifactId>
+                                        <groupId>org.slf4j</groupId>
+                                        <artifactId>slf4j-api</artifactId>
                                     </artifact>
                                     <moduleInfo>
-                                        <name>org.mongodb.driver.sync.client</name>
+                                        <name>org.slf4j</name>
                                     </moduleInfo>
                                 </module>
 
 <!--                                <module>-->
 <!--                                    <artifact>-->
 <!--                                        <groupId>org.slf4j</groupId>-->
-<!--                                        <artifactId>slf4j-api</artifactId>-->
+<!--                                        <artifactId>slf4j-simple</artifactId>-->
 <!--                                    </artifact>-->
 <!--                                    <moduleInfo>-->
-<!--                                        <name>org.slf4j</name>-->
+<!--                                        <name>org.slf4j.simple</name>-->
 <!--                                    </moduleInfo>-->
 <!--                                </module>-->
                             </modules>

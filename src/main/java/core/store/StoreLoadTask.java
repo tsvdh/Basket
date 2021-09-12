@@ -1,13 +1,13 @@
 package core.store;
 
+import core.App;
 import core.Basket;
-import db.DBConnectException;
-import db.DBConnection;
 import java.util.LinkedList;
 import java.util.List;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
-import org.bson.Document;
+import server.ServerConnectionException;
+import server.ServerHandler;
 
 import static core.EmbeddedMessage.newEmbeddedErrorMessage;
 import static java.util.Collections.singletonList;
@@ -16,23 +16,17 @@ public class StoreLoadTask extends Task<List<Node>> {
 
     @Override
     protected List<Node> call() {
-        Iterable<Document> documents;
+        List<App> apps;
         try {
-            documents = DBConnection.getInstance().getAppInfo();
-        } catch (DBConnectException e) {
+            apps = ServerHandler.getStoreApps();
+        } catch (ServerConnectionException e) {
             return singletonList(newEmbeddedErrorMessage(e.getMessage(),
                     event -> Basket.getInstance().loadStore()));
         }
 
         LinkedList<Node> items = new LinkedList<>();
 
-        for (Document document : documents) {
-            StoreItem storeItem = new StoreItem(document);
-
-            if (storeItem.isValid()) {
-                items.add(storeItem);
-            }
-        }
+        apps.forEach(app -> items.add(new StoreItem(app)));
 
         // TODO: sort items
 

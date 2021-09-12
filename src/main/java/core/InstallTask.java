@@ -1,8 +1,9 @@
 package core;
 
-import common.ExternalPropertiesHandler;
-import common.FileHandler;
-import common.PathHandler;
+import basket.api.common.ExternalPropertiesHandler;
+import basket.api.common.PathHandler;
+import basket.api.prebuilt.Message;
+import basket.api.util.Version;
 import core.library.AppInfo;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,15 +19,13 @@ import javafx.concurrent.Task;
 import javafx.scene.control.ProgressBar;
 import main.Settings;
 import net.lingala.zip4j.ZipFile;
-import prebuilt.Message;
-import util.Version;
 
-import static common.FileHandler.copyPathAndContent;
-import static common.FileHandler.deletePathAndContent;
+import static basket.api.common.FileHandler.copyPathAndContent;
+import static basket.api.common.FileHandler.deletePathAndContent;
+import static basket.api.util.url.URLConstructor.makeURL;
 import static java.lang.Math.pow;
 import static main.Util.signEqual;
 import static org.apache.commons.io.IOUtils.closeQuietly;
-import static util.url.URLConstructor.makeURL;
 
 public class InstallTask extends Task<Boolean> {
 
@@ -84,7 +83,7 @@ public class InstallTask extends Task<Boolean> {
             updateProgress(-1, 1);
             try {
                 // backup files
-                FileHandler.copyPathAndContent(appHomePath, backupPath);
+                copyPathAndContent(appHomePath, backupPath);
             } catch (IOException e) {
                 new Message("Could not create backup", true);
                 return false;
@@ -149,18 +148,18 @@ public class InstallTask extends Task<Boolean> {
         }
         catch (IOException | RuntimeException e) {
             if (!update) {
-                new Message("Install failed", true);
+                new Message("Install failed: " + e.getMessage(), true);
                 try {
                     deletePathAndContent(appHomePath);
                 } catch (IOException ignored) {}
             } else {
                 updateMessage("Restoring");
-                new Message("Update failed", true);
+                new Message("Update failed: " + e.getMessage(), true);
                 try {
                     copyPathAndContent(backupPath, appHomePath);
                 } catch (IOException backupFail) {
                     try {
-                        new Message("Backup failed", true);
+                        new Message("Backup failed: " + e.getMessage(), true);
                         Settings.removeApp(appName);
                         // TODO: remove from GUI
                     } catch (IOException fatal) {

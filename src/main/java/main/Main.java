@@ -1,7 +1,7 @@
 package main;
 
-import app.BasketApp;
-import common.StyleHandler;
+import basket.api.app.BasketApp;
+import basket.api.common.StyleHandler;
 import core.Basket;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -15,6 +15,12 @@ public class Main extends Application {
         public void start() {
             //noinspection ResultOfMethodCallIgnored
             Basket.getInstance();
+            // try {
+            //     System.out.println(Class.forName("org.slf4j.Logger"));
+            // } catch (ClassNotFoundException e) {
+            //     e.printStackTrace();
+            // }
+            // System.exit(0);
         }
 
         @Override

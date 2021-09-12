@@ -1,14 +1,19 @@
 package core;
 
+import basket.api.prebuilt.Message;
 import core.library.LibraryLoadTask;
 import core.store.StoreLoadTask;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.stage.Stage;
+import server.ServerConnectionException;
+import server.ServerHandler;
 
+import static core.EmbeddedMessage.newEmbeddedLoadingMessage;
 import static core.EmbeddedMessage.newEmbeddedMessage;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
@@ -42,12 +47,25 @@ public class Basket {
 
         loadStore();
         loadLibrary();
+
+        new Message("hello", true);
+        new Thread(() -> Platform.runLater(() -> new Message("hello", true))).start();
     }
 
     public void loadStore() {
         List<Node> items = controller.storeVBox.getChildren();
         items.clear();
-        items.add(newEmbeddedMessage("loading"));
+        items.add(newEmbeddedLoadingMessage(null));
+
+        Platform.runLater(() -> {
+            try {
+                if (ServerHandler.serverSleeping()) {
+                    items.add(newEmbeddedLoadingMessage("Server is starting, please wait a few moments"));
+                }
+            } catch (ServerConnectionException ignored) {
+                // No need to display error here, as that is done by the store load task
+            }
+        });
 
         StoreLoadTask task = new StoreLoadTask();
         task.setOnSucceeded(event -> {

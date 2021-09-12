@@ -10,22 +10,42 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.AnchorPane;
+import org.jetbrains.annotations.Nullable;
 
 public class EmbeddedMessage extends AnchorPane {
 
     public static EmbeddedMessage newEmbeddedMessage(String message) {
-        EmbeddedMessage embeddedMessage = new EmbeddedMessage(message);
-        embeddedMessage.retryButton.setVisible(false);
+        EmbeddedMessage embeddedMessage = new EmbeddedMessage();
+
+        embeddedMessage.messageLabel.setVisible(true);
+        embeddedMessage.messageLabel.setText(message);
+
         return embeddedMessage;
     }
 
     public static EmbeddedMessage newEmbeddedErrorMessage(String message, EventHandler<ActionEvent> eventHandler) {
-        EmbeddedMessage embeddedMessage = new EmbeddedMessage(message);
+        EmbeddedMessage embeddedMessage = newEmbeddedMessage(message);
+
+        embeddedMessage.retryButton.setVisible(true);
         embeddedMessage.retryButton.setOnAction(eventHandler);
+
         return embeddedMessage;
     }
 
-    private EmbeddedMessage(String message) {
+    public static EmbeddedMessage newEmbeddedLoadingMessage(@Nullable String loadingMessage) {
+        EmbeddedMessage embeddedMessage = new EmbeddedMessage();
+
+        embeddedMessage.loadingIndicator.setVisible(true);
+
+        if (loadingMessage != null) {
+            embeddedMessage.loadingMessageLabel.setVisible(true);
+            embeddedMessage.loadingMessageLabel.setText(loadingMessage);
+        }
+
+        return embeddedMessage;
+    }
+
+    public EmbeddedMessage() {
         super();
 
         URL url = getClass().getResource("/fxml/embedded_message.fxml");
@@ -38,13 +58,6 @@ public class EmbeddedMessage extends AnchorPane {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        if (message.equals("loading")) {
-            this.messageLabel.setVisible(false);
-            this.loadingIndicator.setVisible(true);
-        } else {
-            this.messageLabel.setText(message);
-        }
     }
 
     @FXML
@@ -55,4 +68,7 @@ public class EmbeddedMessage extends AnchorPane {
 
     @FXML
     public ProgressBar loadingIndicator;
+
+    @FXML
+    public Label loadingMessageLabel;
 }

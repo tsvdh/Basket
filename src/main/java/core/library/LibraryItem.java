@@ -1,10 +1,12 @@
 package core.library;
 
-import common.ExternalPropertiesHandler;
-import common.PathHandler;
+import basket.api.common.ExternalPropertiesHandler;
+import basket.api.common.PathHandler;
+import basket.api.prebuilt.Message;
+import basket.api.util.Version;
+import core.App;
 import core.Basket;
 import core.InstallTask;
-import db.DocumentHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -23,11 +25,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import main.Settings;
-import org.bson.Document;
-import prebuilt.Message;
-import util.Version;
+import org.jetbrains.annotations.Nullable;
 
-import static common.FileHandler.deletePathAndContent;
+import static basket.api.common.FileHandler.deletePathAndContent;
 import static java.lang.Runtime.getRuntime;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
@@ -44,7 +44,7 @@ public class LibraryItem extends AnchorPane {
 
     boolean useExperimentalOldValue;
 
-    public LibraryItem(String appName, Document document) {
+    public LibraryItem(String appName, @Nullable App app) {
         super();
 
         URL url = getClass().getResource("/fxml/library_item.fxml");
@@ -67,13 +67,11 @@ public class LibraryItem extends AnchorPane {
             icon.setImage(new Image(in));
         } catch (IOException ignored) {}
 
-        if (document == null) {
+        if (app == null) {
             updateButton.setDisable(true);
             useExperimentalButton.setDisable(true);
             return;
         }
-
-        DocumentHelper documentHelper = new DocumentHelper(document);
 
         ExternalPropertiesHandler infoHandler;
 
@@ -81,20 +79,9 @@ public class LibraryItem extends AnchorPane {
             infoHandler = new ExternalPropertiesHandler(
                     appHomePath.resolve("info.properties"), null);
 
-            if (!appName.equals(documentHelper.getName())) {
+            if (!appName.equals(app.getName())) {
                 throw new RuntimeException("Wrong document");
             }
-
-            Version stable = documentHelper.getStableVersion();
-            Version experimental = documentHelper.getExperimentalVersion();
-
-            URL iconURL = documentHelper.getIconURL();
-            URL githubHome = documentHelper.getGithubHome();
-
-            this.stableInstallTask = new InstallTask(appName, iconURL, githubHome, stable,
-                    false, true);
-            this.experimentalInstallTask = new InstallTask(appName, iconURL, githubHome, experimental,
-                    true, true);
         }
         catch (IOException | RuntimeException e) {
             new Message(e.getMessage() + ", updating disabled for " + appName, true);
@@ -102,6 +89,17 @@ public class LibraryItem extends AnchorPane {
             useExperimentalButton.setDisable(true);
             return;
         }
+
+        Version stable = app.getStable();
+        Version experimental = app.getExperimental();
+
+        URL iconURL = app.getIconAddress();
+        URL githubHome = app.getGithubHome();
+
+        this.stableInstallTask = new InstallTask(appName, iconURL, githubHome, stable,
+                false, true);
+        this.experimentalInstallTask = new InstallTask(appName, iconURL, githubHome, experimental,
+                true, true);
 
         current = (Version) infoHandler.getProperty(AppInfo.current_version);
 

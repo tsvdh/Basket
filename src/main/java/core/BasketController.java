@@ -1,7 +1,9 @@
 package core;
 
-import app.BasketApp;
-import common.PropertiesHandler;
+import basket.api.app.BasketApp;
+import basket.api.common.PropertiesHandler;
+import basket.api.prebuilt.Info;
+import basket.api.prebuilt.Message;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -15,8 +17,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import jfxtras.styles.jmetro.Style;
 import main.Settings;
-import prebuilt.Info;
-import prebuilt.Message;
 
 public class BasketController {
 
@@ -52,6 +52,9 @@ public class BasketController {
     public void showAbout() {
         List<String> infoList = new LinkedList<>();
         infoList.add("Made by Tobias van den Hurk");
+        infoList.add("-");
+        //noinspection SpellCheckingInspection
+        infoList.add("Connected to Atlas MongoDB with a RESTful Spring Boot API");
         new Info(infoList);
     }
 
