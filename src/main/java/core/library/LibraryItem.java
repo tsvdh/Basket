@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static basket.api.common.FileHandler.deletePathAndContent;
 import static java.lang.Runtime.getRuntime;
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static util.ThreadHandler.execute;
 
 public class LibraryItem extends AnchorPane {
 
@@ -189,7 +189,7 @@ public class LibraryItem extends AnchorPane {
             }
         });
 
-        newSingleThreadExecutor().execute(currentInstallTask);
+        execute(currentInstallTask);
     }
 
     @FXML

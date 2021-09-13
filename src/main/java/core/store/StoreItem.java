@@ -20,7 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import main.Settings;
 
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static util.ThreadHandler.execute;
 
 public class StoreItem extends AnchorPane {
 
@@ -102,7 +102,7 @@ public class StoreItem extends AnchorPane {
             }
         });
 
-        newSingleThreadExecutor().execute(installTask);
+        execute(installTask);
     }
 
     @FXML

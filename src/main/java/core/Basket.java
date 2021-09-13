@@ -14,7 +14,7 @@ import server.ServerHandler;
 
 import static core.EmbeddedMessage.newEmbeddedLoadingMessage;
 import static core.EmbeddedMessage.newEmbeddedMessage;
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static util.ThreadHandler.execute;
 
 public class Basket {
 
@@ -53,7 +53,7 @@ public class Basket {
         items.clear();
         items.add(newEmbeddedMessage("Loading..."));
 
-        newSingleThreadExecutor().execute(() -> {
+        execute(() -> {
             try {
                 if (ServerHandler.serverSleeping()) {
                     Platform.runLater(() -> {
@@ -72,7 +72,7 @@ public class Basket {
             items.addAll(task.getValue());
         });
 
-        newSingleThreadExecutor().execute(task);
+        execute(task);
     }
 
     public void loadLibrary() { // TODO: more seamless alternative
@@ -86,6 +86,6 @@ public class Basket {
             items.addAll(task.getValue());
         });
 
-        newSingleThreadExecutor().execute(task);
+        execute(task);
     }
 }

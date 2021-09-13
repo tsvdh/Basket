@@ -192,7 +192,7 @@ public class InstallTask extends Task<Boolean> {
     public static String toMB(long bytes) {
         double MB = pow(10, 6);
 
-        DecimalFormat decimalFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH));
+        DecimalFormat decimalFormat = new DecimalFormat("0", new DecimalFormatSymbols(Locale.ENGLISH));
         double megaBytes = bytes / MB;
 
         return decimalFormat.format(megaBytes);
