@@ -53,18 +53,7 @@ public class Basket {
         items.clear();
         items.add(newEmbeddedMessage("Loading..."));
 
-        execute(() -> {
-            try {
-                if (ServerHandler.serverSleeping()) {
-                    Platform.runLater(() -> {
-                        items.clear();
-                        items.add(newEmbeddedLoadingMessage("Server is starting, please wait a moment"));
-                    });
-                }
-            } catch (ServerConnectionException ignored) {
-                // No need to display error here, as that is done by the store load task
-            }
-        });
+        checkAndShowServerSleeping(items);
 
         StoreLoadTask task = new StoreLoadTask();
         task.setOnSucceeded(event -> {
@@ -80,6 +69,8 @@ public class Basket {
         items.clear();
         items.add(newEmbeddedMessage("Loading..."));
 
+        checkAndShowServerSleeping(items);
+
         LibraryLoadTask task = new LibraryLoadTask();
         task.setOnSucceeded(event -> {
             items.clear();
@@ -87,5 +78,20 @@ public class Basket {
         });
 
         execute(task);
+    }
+
+    private void checkAndShowServerSleeping(List<Node> items) {
+        execute(() -> {
+            try {
+                if (ServerHandler.serverSleeping()) {
+                    Platform.runLater(() -> {
+                        items.clear();
+                        items.add(newEmbeddedLoadingMessage("Server is starting, please wait a moment"));
+                    });
+                }
+            } catch (ServerConnectionException ignored) {
+                // No need to display error here, as that is handled by final load result
+            }
+        });
     }
 }
