@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javafx.version>16</javafx.version>
         <jackson.version>2.12.5</jackson.version>
+        <lombok.version>1.18.20</lombok.version>
     </properties>
 
     <dependencies>
@@ -46,7 +47,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>${lombok.version}</version>
         </dependency>
 
         <!-- for dev with local jar -->
@@ -130,6 +131,13 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -159,63 +167,17 @@
                 <version>3.2.0</version>
                 <executions>
                     <execution>
-                        <id>copy</id>
+                        <id>copy-deps</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.fasterxml.jackson.core</groupId>
-                                    <artifactId>jackson-annotations</artifactId>
-                                    <version>${jackson.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.fasterxml.jackson.core</groupId>
-                                    <artifactId>jackson-core</artifactId>
-                                    <version>${jackson.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.fasterxml.jackson.core</groupId>
-                                    <artifactId>jackson-databind</artifactId>
-                                    <version>${jackson.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.github.tsvdh</groupId>
-                                    <artifactId>basket-api</artifactId>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>net.java.dev.jna</groupId>
-                                    <artifactId>jna-jpms</artifactId>
-                                    <version>5.8.0</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>net.java.dev.jna</groupId>
-                                    <artifactId>jna-platform-jpms</artifactId>
-                                    <version>5.8.0</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.controlsfx</groupId>
-                                    <artifactId>controlsfx</artifactId>
-                                    <version>11.0.0</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jetbrains</groupId>
-                                    <artifactId>annotations</artifactId>
-                                    <version>22.0.0</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jfxtras</groupId>
-                                    <artifactId>jmetro</artifactId>
-                                    <version>11.6.15</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.projectlombok</groupId>
-                                    <artifactId>lombok</artifactId>
-                                </artifactItem>
-                            </artifactItems>
                             <outputDirectory>${project.build.directory}\modules</outputDirectory>
+                            <includeArtifactIds>
+                                jackson-annotations, jackson-core, jackson-databind, basket-api, jna-jpms, jna-platform-jpms,
+                                controlsfx, annotations, jmetro, lombok
+                            </includeArtifactIds>
                         </configuration>
                     </execution>
 
@@ -227,8 +189,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}\modules\javafx</outputDirectory>
-                            <includeScope>runtime</includeScope>
-                            <includeArtifactIds>javafx-base, javafx-controls, javafx-fxml, javafx-graphics, javafx-media, javafx-web</includeArtifactIds>
+                            <includeGroupIds>org.openjfx</includeGroupIds>
                         </configuration>
                     </execution>
                 </executions>
