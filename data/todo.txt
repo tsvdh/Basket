@@ -2,4 +2,4 @@ smooth store replacing
 
 app usage info
 
-auto update
+easy updating
