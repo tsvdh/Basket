@@ -1,7 +1,6 @@
 package core;
 
 import basket.api.common.ExternalPropertiesHandler;
-import basket.api.common.PathHandler;
 import basket.api.prebuilt.Message;
 import basket.api.util.Version;
 import core.library.AppInfo;
@@ -20,13 +19,14 @@ import javafx.concurrent.Task;
 import javafx.scene.control.ProgressBar;
 import main.Settings;
 import net.lingala.zip4j.ZipFile;
+import util.Util;
 
 import static basket.api.common.FileHandler.copyPathAndContent;
 import static basket.api.common.FileHandler.deletePathAndContent;
 import static basket.api.util.url.URLConstructor.makeURL;
 import static java.lang.Math.pow;
-import static main.Util.signEqual;
 import static org.apache.commons.io.IOUtils.closeQuietly;
+import static util.Util.signEqual;
 
 public class InstallTask extends Task<Boolean> {
 
@@ -69,7 +69,7 @@ public class InstallTask extends Task<Boolean> {
 
     @Override
     protected Boolean call() {
-        Path appHomePath = PathHandler.getAppHomePath(appName);
+        Path appHomePath = Util.getAppLibraryPath(appName);
         Path backupPath = appHomePath.resolveSibling(appName + "_backup");
 
         URL githubURL = makeURL(toGithubAddress(githubHome, wantedVersion));
@@ -151,22 +151,22 @@ public class InstallTask extends Task<Boolean> {
         }
         catch (IOException | RuntimeException e) {
             if (!update) {
-                Platform.runLater(() -> new Message("Install failed: " + e.getMessage(), true));
+                Platform.runLater(() -> new Message("Install failed: " + e, true));
                 try {
                     deletePathAndContent(appHomePath);
                 } catch (IOException ignored) {}
             } else {
                 updateMessage("Restoring");
-                Platform.runLater(() -> new Message("Update failed: " + e.getMessage(), true));
+                Platform.runLater(() -> new Message("Update failed: " + e, true));
                 try {
                     copyPathAndContent(backupPath, appHomePath);
                 } catch (IOException backupFail) {
                     try {
-                        Platform.runLater(() -> new Message("Backup failed: " + e.getMessage(), true));
+                        Platform.runLater(() -> new Message("Backup failed: " + e, true));
                         Settings.removeApp(appName);
                         // TODO: remove from GUI
                     } catch (IOException fatal) {
-                        Platform.runLater(() -> new Message(fatal.getMessage() + ", " + appName
+                        Platform.runLater(() -> new Message(fatal + ", " + appName
                                 + " is broken. Try to remove the app later", true));
                     }
                 }

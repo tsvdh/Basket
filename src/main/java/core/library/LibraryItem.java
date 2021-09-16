@@ -1,7 +1,6 @@
 package core.library;
 
 import basket.api.common.ExternalPropertiesHandler;
-import basket.api.common.PathHandler;
 import basket.api.prebuilt.Message;
 import basket.api.util.Version;
 import core.App;
@@ -26,6 +25,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import main.Settings;
 import org.jetbrains.annotations.Nullable;
+import util.Util;
 
 import static basket.api.common.FileHandler.deletePathAndContent;
 import static java.lang.Runtime.getRuntime;
@@ -59,7 +59,7 @@ public class LibraryItem extends AnchorPane {
         }
 
         this.appName = appName;
-        this.appHomePath = PathHandler.getAppHomePath(appName);
+        this.appHomePath = Util.getAppLibraryPath(appName);
 
         nameLabel.setText(appName);
 
@@ -84,7 +84,7 @@ public class LibraryItem extends AnchorPane {
             }
         }
         catch (IOException | RuntimeException e) {
-            new Message(e.getMessage() + ", updating disabled for " + appName, true);
+            new Message(e + ", updating disabled for " + appName, true);
             updateButton.setDisable(true);
             useExperimentalButton.setDisable(true);
             return;
@@ -138,7 +138,7 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void launch() {
-        Path executable = PathHandler.getAppHomePath(appName).resolve("image/bin/" + appName + ".bat");
+        Path executable = Util.getAppLibraryPath(appName).resolve("image/bin/" + appName + ".bat");
 
         if (!Files.exists(executable)) {
             // TODO: invoke repair
@@ -212,7 +212,7 @@ public class LibraryItem extends AnchorPane {
         try {
             Settings.removeApp(appName);
         } catch (IOException e) {
-            new Message(e.getMessage(), true);
+            new Message(e.toString(), true);
             return;
         }
 

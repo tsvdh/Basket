@@ -21,4 +21,5 @@ module basket {
     exports core.store;
     exports main;
     exports server;
+    exports util;
 }

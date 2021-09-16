@@ -80,7 +80,7 @@ public class Basket {
         execute(task);
     }
 
-    private void checkAndShowServerSleeping(List<Node> items) {
+    private static void checkAndShowServerSleeping(List<Node> items) {
         execute(() -> {
             try {
                 if (ServerHandler.serverSleeping()) {

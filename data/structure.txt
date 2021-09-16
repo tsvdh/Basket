@@ -1,40 +1,44 @@
 (App specific folders)
-User folder\Appdata\Roaming\Basket
+
 |
-+--Sudoku
-|
-+--Snake
-|
-+--Cards
+
 
 (Basket folder)
-User folder\Basket
+User folder\Appdata\Roaming\Basket
+|
++--apps
+|  |
+|  +--data
+|  |  |
+|  |  +--.self
+|  |  |  |
+|  |  |  +--settings.properties
+|  |  |
+|  |  +--Sudoku
+|  |  |
+|  |  +--Snake
+|  |  |
+|  |  +--Cards
+|  |
+|  +--library
+|  |  |
+|  |  +--Sudoku
+|  |  |  |
+|  |  |  +--info.properties
+|  |  |  |
+|  |  |  +--icon.png
+|  |  |  |
+|  |  |  +--image
+|  |  |
+|  |  +--Snake
+|  |  |
+|  |  +--Cards
 |
 +--image
 |
 +--resources
 |  |
-|  +--private
-|  |  |
-|  |  +--settings.properties
-|  |
-|  +--public
-|  |  |
-|  |  +--style
-|
-+--library
-|  |
-|  +--Sudoku
-|  |  |
-|  |  +--info.properties
-|  |  |
-|  |  +--icon.png
-|  |  |
-|  |  +--image
-|  |
-|  +--Snake
-|  |
-|  +--Cards
+|  +--style
 
 
 All general folders will be created at Basket installation.

@@ -20,7 +20,7 @@ public class StoreLoadTask extends Task<List<Node>> {
         try {
             apps = ServerHandler.getStoreApps();
         } catch (ServerConnectionException e) {
-            return singletonList(newEmbeddedErrorMessage(e.getMessage(),
+            return singletonList(newEmbeddedErrorMessage("Could not connect to the server",
                     event -> Basket.getInstance().loadStore()));
         }
 
