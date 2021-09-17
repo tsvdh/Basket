@@ -4,15 +4,14 @@ import basket.api.app.Property;
 import basket.api.util.Version;
 import java.util.function.Function;
 
-public enum AppInfo implements Property {
+public enum TempAppInfo implements Property {
 
-    name(String::valueOf),
     current_version(Version::parse),
     use_experimental(Boolean::parseBoolean);
 
     private final Function<String, Object> parser;
 
-    AppInfo(Function<String, Object> parser) {
+    TempAppInfo(Function<String, Object> parser) {
         this.parser = parser;
     }
 

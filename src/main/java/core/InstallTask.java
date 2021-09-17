@@ -1,9 +1,11 @@
 package core;
 
 import basket.api.common.ExternalPropertiesHandler;
+import basket.api.common.PathHandler;
 import basket.api.prebuilt.Message;
 import basket.api.util.Version;
-import core.library.AppInfo;
+import core.library.PersistentAppInfo;
+import core.library.TempAppInfo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Locale;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -104,12 +108,21 @@ public class InstallTask extends Task<Boolean> {
             Files.createDirectory(appHomePath);
 
             // store app info
-            ExternalPropertiesHandler infoHandler = new ExternalPropertiesHandler(
+            ExternalPropertiesHandler tempInfoHandler = new ExternalPropertiesHandler(
                     appHomePath.resolve("info.properties"), null);
-            infoHandler.setProperty(AppInfo.name, appName)
-                    .setProperty(AppInfo.current_version, wantedVersion)
-                    .setProperty(AppInfo.use_experimental, experimental)
+            tempInfoHandler
+                    .setProperty(TempAppInfo.current_version, wantedVersion)
+                    .setProperty(TempAppInfo.use_experimental, experimental)
                     .save();
+
+            Path persistentInfoPath = PathHandler.getDataFolderOfAppPath(appName).resolve("info.properties");
+            if (Files.exists(persistentInfoPath)) {
+                ExternalPropertiesHandler persistentInfoHandler = new ExternalPropertiesHandler(
+                        persistentInfoPath, null);
+                persistentInfoHandler
+                        .setProperty(PersistentAppInfo.time_used, Duration.ofMinutes(0))
+                        .setProperty(PersistentAppInfo.last_used, LocalDate.MIN);
+            }
 
             // download icon
             Files.copy(iconStream, appHomePath.resolve("icon.png"));
