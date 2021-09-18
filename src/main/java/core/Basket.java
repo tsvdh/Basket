@@ -1,5 +1,7 @@
 package core;
 
+import basket.api.app.BasketApp;
+import basket.api.common.ExternalPropertiesHandler;
 import core.library.LibraryLoadTask;
 import core.store.StoreLoadTask;
 import java.io.IOException;
@@ -9,6 +11,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.stage.Stage;
+import main.Settings;
 import server.ServerConnectionException;
 import server.ServerHandler;
 
@@ -69,7 +72,12 @@ public class Basket {
         items.clear();
         items.add(newEmbeddedMessage("Loading..."));
 
-        checkAndShowServerSleeping(items);
+        ExternalPropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
+        StringQueue installedNames = (StringQueue) settingsHandler.getProperty(Settings.installed_apps);
+
+        if (!installedNames.isEmpty()) {
+            checkAndShowServerSleeping(items);
+        }
 
         LibraryLoadTask task = new LibraryLoadTask();
         task.setOnSucceeded(event -> {
