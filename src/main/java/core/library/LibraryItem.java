@@ -1,6 +1,7 @@
 package core.library;
 
 import basket.api.common.ExternalPropertiesHandler;
+import basket.api.common.PathHandler;
 import basket.api.prebuilt.Message;
 import basket.api.util.Version;
 import core.App;
@@ -11,6 +12,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDate;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -67,16 +70,28 @@ public class LibraryItem extends AnchorPane {
             icon.setImage(new Image(in));
         } catch (IOException ignored) {}
 
+        try {
+            ExternalPropertiesHandler persistentInfoHandler = new ExternalPropertiesHandler(
+                    PathHandler.getDataFolderOfAppPath(appName).resolve("info.properties"), null);
+            Duration timeUsed = (Duration) persistentInfoHandler.getProperty(PersistentAppInfo.time_used);
+            LocalDate lastUsed = (LocalDate) persistentInfoHandler.getProperty(PersistentAppInfo.last_used);
+
+            showPersistentInfo(timeUsed, lastUsed);
+        }
+        catch (IOException e) {
+            new Message(e.toString(), true);
+        }
+
         if (app == null) {
             updateButton.setDisable(true);
             useExperimentalButton.setDisable(true);
             return;
         }
 
-        ExternalPropertiesHandler infoHandler;
+        ExternalPropertiesHandler tempInfoHandler;
 
         try {
-            infoHandler = new ExternalPropertiesHandler(
+            tempInfoHandler = new ExternalPropertiesHandler(
                     appHomePath.resolve("info.properties"), null);
 
             if (!appName.equals(app.getName())) {
@@ -101,9 +116,9 @@ public class LibraryItem extends AnchorPane {
         this.experimentalInstallTask = new InstallTask(appName, iconURL, githubHome, experimental,
                 true, true);
 
-        current = (Version) infoHandler.getProperty(AppInfo.current_version);
+        current = (Version) tempInfoHandler.getProperty(TempAppInfo.current_version);
 
-        useExperimentalOldValue = (boolean) infoHandler.getProperty(AppInfo.use_experimental);
+        useExperimentalOldValue = (boolean) tempInfoHandler.getProperty(TempAppInfo.use_experimental);
         useExperimentalButton.setSelected(useExperimentalOldValue);
 
         if (useExperimentalOldValue) {
@@ -115,7 +130,23 @@ public class LibraryItem extends AnchorPane {
         setUpdateButton();
     }
 
-    public void setUpdateButton() {
+    private void showPersistentInfo(Duration timeUsed, LocalDate lastUsed) {
+        long used;
+        if (timeUsed.toMinutes() > 60) {
+            used = timeUsed.toHours();
+        } else {
+            used = timeUsed.toMinutes();
+        }
+        timeUsedLabel.setText("Time used: " + used);
+
+        if (lastUsed.equals(LocalDate.MIN)) {
+            lastUsedLabel.setText("Last used: Never");
+        } else {
+            lastUsedLabel.setText("Last used: " + lastUsed.getDayOfMonth() + lastUsed.getMonth());
+        }
+    }
+
+    private void setUpdateButton() {
         // switching type of version, so update should always be allowed
         if (useExperimentalOldValue != useExperimentalButton.isSelected()) {
             updateButton.setDisable(false);
@@ -162,9 +193,30 @@ public class LibraryItem extends AnchorPane {
             process.destroyForcibly();
         });
 
+        long startTime = System.currentTimeMillis();
+
         process.onExit().thenRun(() -> Platform.runLater(() -> {
             launchButton.setText("Launch");
             launchButton.setOnAction(event -> launch());
+
+            try {
+                ExternalPropertiesHandler persistentInfoHandler = new ExternalPropertiesHandler(
+                        PathHandler.getDataFolderOfAppPath(appName).resolve("info.properties"), null);
+                Duration timeUsed = (Duration) persistentInfoHandler.getProperty(PersistentAppInfo.time_used);
+
+                long millisUsed = System.currentTimeMillis() - startTime;
+                timeUsed = timeUsed.plusMillis(millisUsed);
+                LocalDate lastUsed = LocalDate.now();
+
+                persistentInfoHandler
+                        .setProperty(PersistentAppInfo.time_used, timeUsed)
+                        .setProperty(PersistentAppInfo.last_used, lastUsed);
+
+                showPersistentInfo(timeUsed, lastUsed);
+            }
+            catch (IOException e) {
+                new Message(e.toString(), true);
+            }
         }));
     }
 
@@ -242,4 +294,10 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public ProgressBar loadingBar;
+
+    @FXML
+    public Label timeUsedLabel;
+
+    @FXML
+    public Label lastUsedLabel;
 }
