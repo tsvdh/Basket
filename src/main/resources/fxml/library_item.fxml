@@ -36,7 +36,21 @@
                         <Image url="@../images/no_icon.png" />
                      </image>
                   </ImageView>
-                  <StackPane prefWidth="700.0">
+                  <VBox alignment="CENTER_LEFT" prefHeight="130.0" prefWidth="150.0" spacing="10.0">
+                     <children>
+                        <Label fx:id="timeUsedLabel" style="-fx-font-size: 14;" text="Time used: -">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lastUsedLabel" style="-fx-font-size: 14;" text="Last used: -">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <StackPane prefWidth="600.0">
                      <children>
                         <HBox fx:id="controlHBox" alignment="CENTER" spacing="20.0">
                            <children>

@@ -116,12 +116,13 @@ public class InstallTask extends Task<Boolean> {
                     .save();
 
             Path persistentInfoPath = PathHandler.getDataFolderOfAppPath(appName).resolve("info.properties");
-            if (Files.exists(persistentInfoPath)) {
+            if (!Files.exists(persistentInfoPath)) {
                 ExternalPropertiesHandler persistentInfoHandler = new ExternalPropertiesHandler(
                         persistentInfoPath, null);
                 persistentInfoHandler
                         .setProperty(PersistentAppInfo.time_used, Duration.ofMinutes(0))
-                        .setProperty(PersistentAppInfo.last_used, LocalDate.MIN);
+                        .setProperty(PersistentAppInfo.last_used, LocalDate.MIN)
+                        .save();
             }
 
             // download icon

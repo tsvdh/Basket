@@ -23,7 +23,7 @@ public class ServerHandler {
     public static boolean serverSleeping() throws ServerConnectionException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(makeURI(ADDRESS))
-                .timeout(Duration.ofSeconds(2))
+                .timeout(Duration.ofSeconds(3))
                 .GET()
                 .build();
 

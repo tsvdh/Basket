@@ -131,18 +131,31 @@ public class LibraryItem extends AnchorPane {
     }
 
     private void showPersistentInfo(Duration timeUsed, LocalDate lastUsed) {
-        long used;
+        String used;
         if (timeUsed.toMinutes() > 60) {
-            used = timeUsed.toHours();
+            used = timeUsed.toHours() + "h";
         } else {
-            used = timeUsed.toMinutes();
+            used = timeUsed.toMinutes() + "m";
         }
         timeUsedLabel.setText("Time used: " + used);
 
         if (lastUsed.equals(LocalDate.MIN)) {
             lastUsedLabel.setText("Last used: Never");
         } else {
-            lastUsedLabel.setText("Last used: " + lastUsed.getDayOfMonth() + lastUsed.getMonth());
+            LocalDate now = LocalDate.now();
+            int dayDifference = now.getDayOfYear() - lastUsed.getDayOfYear();
+            String date;
+
+            if (lastUsed.getYear() == now.getYear() && dayDifference <= 1) {
+                if (dayDifference == 0) {
+                    date = "Today";
+                } else {
+                    date = "Yesterday";
+                }
+            } else {
+                date = lastUsed.getDayOfMonth() + " " + lastUsed.getMonth().toString().toLowerCase();
+            }
+            lastUsedLabel.setText("Last used: " + date);
         }
     }
 
@@ -210,7 +223,8 @@ public class LibraryItem extends AnchorPane {
 
                 persistentInfoHandler
                         .setProperty(PersistentAppInfo.time_used, timeUsed)
-                        .setProperty(PersistentAppInfo.last_used, lastUsed);
+                        .setProperty(PersistentAppInfo.last_used, lastUsed)
+                        .save();
 
                 showPersistentInfo(timeUsed, lastUsed);
             }
