@@ -1,16 +1,10 @@
 smooth store replacing
 
-app usage info
-
 easy updating
 
 button changing size
 
 store saves in cloud
 
-fix store server sleeping bug
-
-
-create exe for image
 
 change installer text

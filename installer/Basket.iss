@@ -4,8 +4,7 @@
 #define AppName "Basket"
 #define AppVersion "0.1.0"
 #define AppPublisher "Tobias van den Hurk"
-#define AppExeName "Basket"
-#define AppExeLocation "{app}\image\bin\Basket.bat"
+#define AppExeLocation "{app}\image\bin\Basket.exe"
 #define ProjectLocation "C:\Users\tsvdh\IntelliJProjects\Basket"
 #define IconLocation "\src\main\resources\images\icon.ico"
 
