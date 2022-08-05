@@ -1,12 +1,11 @@
 package core;
 
-import basket.api.app.BasketApp;
-import basket.api.common.ExternalPropertiesHandler;
 import core.library.LibraryLoadTask;
 import core.store.StoreLoadTask;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -15,6 +14,7 @@ import main.Settings;
 import server.ServerConnectionException;
 import server.ServerHandler;
 
+import static basket.api.app.BasketApp.getSettingsHandler;
 import static core.EmbeddedMessage.newEmbeddedLoadingMessage;
 import static core.EmbeddedMessage.newEmbeddedMessage;
 import static util.ThreadHandler.execute;
@@ -72,10 +72,10 @@ public class Basket {
         items.clear();
         items.add(newEmbeddedMessage("Loading..."));
 
-        ExternalPropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
-        StringQueue installedNames = (StringQueue) settingsHandler.getProperty(Settings.installed_apps);
+        Set<String> acquiredApps = getSettingsHandler()
+                .getConvertedObject(Settings.class).getAcquiredApps();
 
-        if (!installedNames.isEmpty()) {
+        if (!acquiredApps.isEmpty()) {
             checkAndShowServerSleeping(items);
         }
 
@@ -91,7 +91,7 @@ public class Basket {
     private static void checkAndShowServerSleeping(List<Node> items) {
         execute(() -> {
             try {
-                if (ServerHandler.serverSleeping()) {
+                if (ServerHandler.getInstance().serverSleeping()) {
                     Platform.runLater(() -> {
                         items.clear();
                         items.add(newEmbeddedLoadingMessage("Server is starting, please wait a moment"));

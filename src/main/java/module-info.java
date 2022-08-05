@@ -5,6 +5,7 @@ module basket {
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.datatype.jsr310;
     requires lombok;
     requires org.jfxtras.styles.jmetro;
     requires zip4j;
@@ -12,8 +13,9 @@ module basket {
     requires java.net.http;
     requires javafx.fxml;
     requires org.jetbrains.annotations;
+    requires libphonenumber;
 
-    opens properties to basket.api;
+    opens data to basket.api;
     opens images to basket.api;
 
     exports core;
@@ -22,4 +24,7 @@ module basket {
     exports main;
     exports server;
     exports util;
+    exports server.common;
+    exports server.common.model.app;
+    exports server.common.model.user;
 }

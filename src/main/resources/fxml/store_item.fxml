@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<fx:root maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" prefHeight="200.0" prefWidth="1000.0" type="AnchorPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" prefHeight="200.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="core.store.StoreItem">
    <children>
       <VBox prefHeight="200.0" prefWidth="1000.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -37,38 +37,25 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <StackPane prefHeight="130.0" prefWidth="500.0">
+                  <HBox alignment="CENTER" prefHeight="130.0" prefWidth="500.0" spacing="100.0">
                      <children>
-                        <Button fx:id="installButton" focusTraversable="false" mnemonicParsing="false" onAction="#install" style="-fx-font-size: 15;" text="Install">
+                        <Label fx:id="ratingLabel" text="4.2 (123)" textFill="GREEN">
                            <font>
                               <Font size="15.0" />
                            </font>
-                        </Button>
-                        <HBox fx:id="installHBox" alignment="CENTER" spacing="20.0" visible="false">
+                        </Label>
+                        <StackPane prefHeight="150.0" prefWidth="200.0">
                            <children>
-                              <StackPane prefHeight="150.0" prefWidth="200.0">
-                                 <children>
-                                    <VBox alignment="CENTER">
-                                       <children>
-                                          <ProgressBar fx:id="progressBar" focusTraversable="false" maxWidth="200.0" prefWidth="200.0" progress="0.0" visible="false" />
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="CENTER">
-                                       <children>
-                                          <ProgressBar fx:id="loadingBar" focusTraversable="false" maxWidth="200.0" prefWidth="200.0" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </StackPane>
-                              <Label fx:id="progressLabel" style="-fx-font-size: 14;" text="Info">
+                              <Button fx:id="addButton" focusTraversable="false" mnemonicParsing="false" onAction="#addToLibrary" style="-fx-font-size: 15;" text="Add to library">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="15.0" />
                                  </font>
-                              </Label>
+                              </Button>
+                              <ProgressBar fx:id="progressBar" focusTraversable="false" maxWidth="200.0" prefWidth="200.0" visible="false" />
                            </children>
-                        </HBox>
+                        </StackPane>
                      </children>
-                  </StackPane>
+                  </HBox>
                </children>
             </HBox>
             <Separator focusTraversable="false" />
@@ -78,4 +65,4 @@
          </padding>
       </VBox>
    </children>
-</fx:root>
+</AnchorPane>

@@ -1,3 +1,4 @@
-/.idea
-/target
-/installer/Output
+.idea
+target
+installer/Output
+installer/certificate

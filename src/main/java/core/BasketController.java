@@ -1,7 +1,6 @@
 package core;
 
 import basket.api.app.BasketApp;
-import basket.api.common.PropertiesHandler;
 import basket.api.prebuilt.Info;
 import basket.api.prebuilt.Message;
 import java.awt.Desktop;
@@ -18,13 +17,15 @@ import javafx.scene.layout.VBox;
 import jfxtras.styles.jmetro.Style;
 import main.Settings;
 
+import static basket.api.app.BasketApp.getSettingsHandler;
+
 public class BasketController {
 
     public void init() {
         tabPane.getSelectionModel().select(0); // open store tab at startup
 
-        PropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
-        Style jMetroStyle = (Style) settingsHandler.getProperty(Settings.jmetro_style);
+        Style jMetroStyle = getSettingsHandler()
+                .getConvertedObject(Settings.class).getJmetroStyle();
         if (jMetroStyle == Style.DARK) {
             darkModeMenuItem.setSelected(true);
         }
@@ -63,8 +64,8 @@ public class BasketController {
 
     @FXML
     public void swapJMetroTheme() {
-        PropertiesHandler settingsHandler = BasketApp.getSettingsHandler();
-        Style jMetroStyle = (Style) settingsHandler.getProperty(Settings.jmetro_style);
+        var settings = getSettingsHandler().getConvertedObject(Settings.class);
+        Style jMetroStyle = settings.getJmetroStyle();
 
         if (jMetroStyle == Style.LIGHT) {
             jMetroStyle = Style.DARK;
@@ -72,8 +73,14 @@ public class BasketController {
             jMetroStyle = Style.LIGHT;
         }
 
-        settingsHandler.setProperty(Settings.jmetro_style, jMetroStyle);
         BasketApp.getStyleHandler().reStyleJMetro(jMetroStyle);
+
+        settings.setJmetroStyle(jMetroStyle);
+        try {
+            getSettingsHandler().save();
+        } catch (IOException e) {
+            new Message("Could not save settings", true);
+        }
     }
 
     @FXML

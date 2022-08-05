@@ -1,23 +1,17 @@
 package core.library;
 
-import basket.api.app.Property;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.util.function.Function;
+import java.time.OffsetDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public enum PersistentAppInfo implements Property {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class PersistentAppInfo {
 
-    time_used(Duration::parse),
-    last_used(LocalDate::parse);
-
-    private final Function<String, Object> parser;
-
-    PersistentAppInfo(Function<String, Object> parser) {
-        this.parser = parser;
-    }
-
-    @Override
-    public Function<String, Object> getParser() {
-        return parser;
-    }
+    private Duration timeUsed;
+    private OffsetDateTime lastUsed;
+    private boolean serverNotifiedOfAcquisition;
 }

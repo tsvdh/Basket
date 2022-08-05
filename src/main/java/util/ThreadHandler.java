@@ -1,19 +1,19 @@
 package util;
 
 import basket.api.util.Threads;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import lombok.Getter;
 
 public class ThreadHandler {
 
     @Getter
-    private static final ExecutorService executorService;
+    private static final ScheduledExecutorService executorService;
 
     private ThreadHandler() {}
 
     static {
-        executorService = Executors.newCachedThreadPool();
+        executorService = Executors.newScheduledThreadPool(1);
 
         Threads.addExecutorShutdownHookOnJavaFXApplicationClose(executorService);
     }

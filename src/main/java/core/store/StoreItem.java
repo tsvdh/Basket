@@ -1,11 +1,6 @@
 package core.store;
 
-import basket.api.app.BasketApp;
-import basket.api.util.Version;
-import core.App;
 import core.Basket;
-import core.InstallTask;
-import core.StringQueue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -17,20 +12,22 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import main.Settings;
+import server.ServerConnectionException;
+import server.ServerHandler;
+import server.common.FileName;
+import server.common.model.app.App;
 
 import static util.ThreadHandler.execute;
 
 public class StoreItem extends AnchorPane {
 
-    private InstallTask installTask;
+    private final App app;
 
     public StoreItem(App app) {
         super();
 
-        URL fxml_url = getClass().getResource("/fxml/store_item.fxml");
-        FXMLLoader loader = new FXMLLoader(fxml_url);
+        URL fxmlUrl = getClass().getResource("/fxml/store_item.fxml");
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
         loader.setController(this);
         loader.setRoot(this);
 
@@ -40,33 +37,27 @@ public class StoreItem extends AnchorPane {
             throw new RuntimeException(e);
         }
 
+        this.app = app;
+
         nameLabel.setText(app.getName());
         descriptionLabel.setText(app.getDescription());
 
-        URL url = app.getIconAddress();
+        execute(() -> {
+            try {
+                InputStream iconStream = ServerHandler.getInstance()
+                        .getDownloadStream(app.getId(), FileName.ICON).body();
 
-        try (InputStream in = url.openStream()) {
-            icon.setImage(new Image(in));
+                icon.setImage(new Image(iconStream));
+            }
+            catch (ServerConnectionException e) {
+                System.err.println(e.getMessage());
+            }
+        });
+
+        if (!app.isAvailable()) {
+            addButton.setDisable(true);
+            addButton.setText("In library");
         }
-        catch (IOException ignored) {}
-
-        if (installed()) {
-            installButton.setDisable(true);
-            installButton.setText("Installed");
-            return;
-        }
-
-        URL githubHome = app.getGithubHome();
-
-        Version stable = app.getStable();
-
-        installTask = new InstallTask(app.getName(), url, githubHome, stable,
-                false, false);
-    }
-
-    private boolean installed() {
-        StringQueue strings = (StringQueue) BasketApp.getSettingsHandler().getProperty(Settings.installed_apps);
-        return strings.contains(nameLabel.getText());
     }
 
     @FXML
@@ -79,41 +70,40 @@ public class StoreItem extends AnchorPane {
     public ImageView icon;
 
     @FXML
-    public Button installButton;
+    public Label ratingLabel;
 
     @FXML
-    public void install() {
-        installTask.bindBars(progressBar, loadingBar);
-
-        progressLabel.textProperty().bind(installTask.messageProperty());
-
-        installButton.setVisible(false);
-        installHBox.setVisible(true);
-
-        installTask.setOnSucceeded(stateEvent -> {
-            installButton.setVisible(true);
-            installHBox.setVisible(false);
-
-
-            if (installTask.getValue()) {
-                installButton.setDisable(true);
-                installButton.setText("Installed");
-                Basket.getInstance().loadLibrary();
-            }
-        });
-
-        execute(installTask);
-    }
-
-    @FXML
-    public HBox installHBox;
-
-    @FXML
-    public Label progressLabel;
+    public Button addButton;
 
     @FXML
     public ProgressBar progressBar;
 
     @FXML
-    public ProgressBar loadingBar;
+    public void addToLibrary() {
+        if (!app.isAvailable()) {
+            return;
+        }
+
+        addButton.setVisible(false);
+        progressBar.setVisible(true);
+
+        var task = new AcquireTask(app);
+
+        task.setOnSucceeded(event -> {
+
+            addButton.setVisible(true);
+            progressBar.setVisible(false);
+
+            if (task.getValue()) {
+
+                // update library
+                addButton.setDisable(true);
+                addButton.setText("In library");
+
+                Basket.getInstance().loadLibrary();
+            }
+        });
+
+        execute(task);
+    }
 }

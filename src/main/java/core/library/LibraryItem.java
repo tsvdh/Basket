@@ -1,12 +1,10 @@
 package core.library;
 
-import basket.api.common.ExternalPropertiesHandler;
-import basket.api.common.PathHandler;
+import basket.api.handlers.ExternalPropertiesHandler;
+import basket.api.handlers.PathHandler;
 import basket.api.prebuilt.Message;
 import basket.api.util.Version;
-import core.App;
 import core.Basket;
-import core.InstallTask;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -27,27 +25,24 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import main.Settings;
-import org.jetbrains.annotations.Nullable;
+import server.common.model.app.App;
 import util.Util;
 
-import static basket.api.common.FileHandler.deletePathAndContent;
 import static java.lang.Runtime.getRuntime;
 import static util.ThreadHandler.execute;
 
 public class LibraryItem extends AnchorPane {
 
-    private final String appName;
+    private final App app;
     private final Path appHomePath;
 
     private InstallTask stableInstallTask;
     private InstallTask experimentalInstallTask;
     private InstallTask currentInstallTask;
 
-    private Version current;
-
     boolean useExperimentalOldValue;
 
-    public LibraryItem(String appName, @Nullable App app) {
+    public LibraryItem(String appId) {
         super();
 
         URL url = getClass().getResource("/fxml/library_item.fxml");
@@ -61,20 +56,17 @@ public class LibraryItem extends AnchorPane {
             throw new RuntimeException(e);
         }
 
-        this.appName = appName;
-        this.appHomePath = Util.getAppLibraryPath(appName);
+        this.app = app;
+        this.appHomePath = Util.getAppLibraryPath(app.getId());
 
-        nameLabel.setText(appName);
+        nameLabel.setText(app.getName());
 
         try (InputStream in = Files.newInputStream(appHomePath.resolve("icon.png"))) {
             icon.setImage(new Image(in));
         } catch (IOException ignored) {}
 
         try {
-            ExternalPropertiesHandler persistentInfoHandler = new ExternalPropertiesHandler(
-                    PathHandler.getDataFolderOfAppPath(appName).resolve("info.properties"), null);
-            Duration timeUsed = (Duration) persistentInfoHandler.getProperty(PersistentAppInfo.time_used);
-            LocalDate lastUsed = (LocalDate) persistentInfoHandler.getProperty(PersistentAppInfo.last_used);
+
 
             showPersistentInfo(timeUsed, lastUsed);
         }
@@ -182,7 +174,7 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void launch() {
-        Path executable = Util.getAppLibraryPath(appName).resolve("image/bin/" + appName + ".bat");
+        Path executable = Util.getAppLibraryPath(appId).resolve();
 
         if (!Files.exists(executable)) {
             // TODO: invoke repair

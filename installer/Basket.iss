@@ -26,6 +26,8 @@ OutputBaseFilename={#AppName}-{#AppVersion}
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+SignTool=gpg --output $f --sign $f
+SignedUninstaller=yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -37,7 +39,6 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#ProjectLocation}\program\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#ProjectLocation}\target\image\*"; DestDir: "{app}\image"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#ProjectLocation}\src\main\resources\style\*"; DestDir: "{app}\resources\style"; Flags: ignoreversion recursesubdirs createallsubdirs
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{autoprograms}\{#AppName}"; Filename: "{#AppExeLocation}"; IconFilename: "{#ProjectLocation}\{#IconLocation}"

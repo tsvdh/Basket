@@ -1,8 +1,3 @@
-(App specific folders)
-
-|
-
-
 (Basket folder)
 User folder\Appdata\Roaming\Basket
 |
@@ -12,27 +7,33 @@ User folder\Appdata\Roaming\Basket
 |  |  |
 |  |  +--.self
 |  |  |  |
-|  |  |  +--settings.properties
+|  |  |  +--settings.json
 |  |  |
-|  |  +--Sudoku
+|  |  +--(Sudoku id)
+|  |  |  |
+|  |  |  +--app.json - created at acquisition
+|  |  |  |
+|  |  |  +--settings.json - created at app launch
+|  |  |  |
+|  |  |  +--_info.json (persistent) - created at acquisition
 |  |  |
-|  |  +--Snake
+|  |  +--(Snake id)
 |  |  |
-|  |  +--Cards
+|  |  +--(Cards id)
 |  |
 |  +--library
 |  |  |
-|  |  +--Sudoku
+|  |  +--(Sudoku id)
 |  |  |  |
-|  |  |  +--info.properties
+|  |  |  +--_info.json (temp) - created at acquisition
 |  |  |  |
-|  |  |  +--icon.png
+|  |  |  +--icon.png - created at acquisition
 |  |  |  |
-|  |  |  +--image
+|  |  |  +--image - created at install
 |  |  |
-|  |  +--Snake
+|  |  +--(Snake id)
 |  |  |
-|  |  +--Cards
+|  |  +--(Cards id)
 |
 +--image
 |
@@ -41,18 +42,9 @@ User folder\Appdata\Roaming\Basket
 |  +--style
 
 
-All general folders will be created at Basket installation.
-App specific folders are created on app installation.
+All files created at acquisition are guaranteed to exist after item is loaded in library.
 
-Appdata: files for the app, used by the app (settings files)
-
-app info: details about the app, used by the launcher:
-    -name
-    -current version
-    -use experimental
-    -size on disk
-
-Basket provides API to apps. This is the api folder.
-API gives an object to store settings in, reading and writing to disk is handled by Basket.
-
-Basket will update apps.
+Tell server of app acquisition:
+case 1 (-  ): can't tell server, we know of it. tell server later, as he says he doesn't know
+case 2 (+ -): told server, but we don't know it. try to tell server later, but he tells he knows already
+case 3 (+ +): told server and we know it, don't do anything later (default behaviour)
