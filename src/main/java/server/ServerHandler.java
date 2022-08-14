@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import core.library.OfflineAppInfo.Session;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieManager;
@@ -31,6 +32,12 @@ import static basket.api.util.uri.URIConstructor.newURIBuilder;
 public class ServerHandler {
 
     private record Credentials(String username, String password) {}
+
+    private static void checkStatusCode(HttpResponse<?> response) throws ServerConnectionException {
+        if (response.statusCode() != 200) {
+            throw new ServerConnectionException("Request failed");
+        }
+    }
 
     private static final class InstanceHolder {
         private static final ServerHandler instance = new ServerHandler();
@@ -143,9 +150,7 @@ public class ServerHandler {
             throw new ServerConnectionException(e);
         }
 
-        if (response.statusCode() != 200) {
-            throw new ServerConnectionException("Request failed");
-        }
+        checkStatusCode(response);
 
         try {
             return objectMapper.readValue(response.body(), type);
@@ -199,9 +204,7 @@ public class ServerHandler {
             throw new ServerConnectionException(e);
         }
 
-        if (response.statusCode() != 200) {
-            throw new ServerConnectionException("Request failed");
-        }
+        checkStatusCode(response);
 
         return response;
     }
@@ -225,9 +228,7 @@ public class ServerHandler {
             throw new ServerConnectionException(e);
         }
 
-        if (response.statusCode() != 200) {
-            throw new ServerConnectionException("Request failed");
-        }
+        checkStatusCode(response);
     }
 
     public User getUserInfo() throws ServerConnectionException {
@@ -243,14 +244,32 @@ public class ServerHandler {
             throw new ServerConnectionException(e);
         }
 
-        if (response.statusCode() != 200) {
-            throw new ServerConnectionException("Request failed");
-        }
+        checkStatusCode(response);
 
         try {
             return objectMapper.readValue(response.body(), User.class);
         } catch (JsonProcessingException e) {
             throw new FatalError(e);
         }
+    }
+
+    public void notifyAppSession(String appId, Session session) throws ServerConnectionException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(newURIBuilder(address + "/api/v1/user/info/session")
+                        .addKeyValuePair("appId", appId)
+                        .addKeyValuePair("start", session.getStart().toString())
+                        .addKeyValuePair("end", session.getEnd().toString())
+                        .build())
+                .POST(BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<Void> response;
+        try {
+            response = client.send(request, BodyHandlers.discarding());
+        } catch (IOException | InterruptedException e) {
+            throw new ServerConnectionException(e);
+        }
+
+        checkStatusCode(response);
     }
 }

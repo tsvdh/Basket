@@ -4,34 +4,63 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<fx:root maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" prefHeight="200.0" prefWidth="1000.0" type="AnchorPane" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" prefHeight="200.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="core.library.LibraryItem">
    <children>
       <VBox prefHeight="200.0" prefWidth="1000.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="nameLabel" style="-fx-font-size: 24;" text="AppName">
-               <font>
-                  <Font size="24.0" />
-               </font>
-               <padding>
-                  <Insets left="5.0" />
-               </padding>
-            </Label>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+               <children>
+                  <Label fx:id="nameLabel" style="-fx-font-size: 24;" text="AppName">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox fx:id="statusHBox" alignment="CENTER" spacing="20.0" visible="false">
+                     <children>
+                        <ImageView fx:id="errorIcon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                           <image>
+                              <Image url="@../images/error.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="diskStatusIcon" fitHeight="30.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                           <image>
+                              <Image url="@../images/disk.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="cloudStatusIcon" fitHeight="30.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                           <image>
+                              <Image url="@../images/cloud-fill.png" />
+                           </image></ImageView>
+                        <Button fx:id="refreshButton" focusTraversable="false" mnemonicParsing="false" onAction="#refresh" style="-fx-font-size: 13;" text="Retry" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font></Button>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
             <HBox alignment="CENTER_LEFT" spacing="20.0">
                <children>
-                  <ImageView fx:id="icon" fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="appIcon" fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/no_icon.png" />
                      </image>
@@ -52,27 +81,61 @@
                   </VBox>
                   <StackPane prefWidth="600.0">
                      <children>
-                        <HBox fx:id="controlHBox" alignment="CENTER" spacing="20.0">
+                        <FlowPane fx:id="controlPane" alignment="CENTER" columnHalignment="CENTER" hgap="100.0" vgap="20.0">
                            <children>
-                              <Button fx:id="launchButton" focusTraversable="false" mnemonicParsing="false" onAction="#launch" style="-fx-font-size: 15;" text="Launch">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Button>
-                              <MenuButton mnemonicParsing="false" style="-fx-font-size: 15;" styleClass="light" text="More">
-                                <items>
-                                  <MenuItem fx:id="updateButton" mnemonicParsing="false" onAction="#update" text="Update" />
-                                    <CheckMenuItem fx:id="useExperimentalButton" mnemonicParsing="false" onAction="#swapVersion" text="Use experimental version" />
-                                    <SeparatorMenuItem mnemonicParsing="false" />
-                                    <MenuItem mnemonicParsing="false" onAction="#remove" text="Remove" />
-                                </items>
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </MenuButton>
+                              <StackPane>
+                                 <children>
+                                    <SplitMenuButton fx:id="installButton" focusTraversable="false" mnemonicParsing="false" onAction="#installStable" style="-fx-font-size: 15;" text="Install" visible="false">
+                                      <items>
+                                        <MenuItem fx:id="installExperimentalButton" mnemonicParsing="false" onAction="#installExperimental" text="Install experimental" />
+                                      </items>
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </SplitMenuButton>
+                                    <Button fx:id="launchButton" focusTraversable="false" mnemonicParsing="false" onAction="#launch" style="-fx-font-size: 15;" text="Launch">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </StackPane>
+                              <VBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Label fx:id="updateLabel" focusTraversable="false" style="-fx-font-size: 14;" text="Update available" textFill="#0078d7">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <MenuButton fx:id="optionsButton" focusTraversable="false" mnemonicParsing="false" popupSide="RIGHT" style="-fx-font-size: 15;" styleClass="light" text="Options">
+                                      <items>
+                                        <MenuItem fx:id="updateButton" mnemonicParsing="false" onAction="#update" text="Update" />
+                                          <Menu mnemonicParsing="false" text="Version">
+                                            <items>
+                                                <CheckMenuItem fx:id="stableCheckItem" mnemonicParsing="false" onAction="#swapToStable" text="Stable" />
+                                                <CheckMenuItem fx:id="experimentalCheckItem" mnemonicParsing="false" onAction="#swapToExperimental" text="Experimental" />
+                                            </items>
+                                          </Menu>
+                                          <SeparatorMenuItem mnemonicParsing="false" />
+                                          <MenuItem mnemonicParsing="false" onAction="#remove" text="Remove" />
+                                      </items>
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </MenuButton>
+                                    <Label focusTraversable="false" style="-fx-font-size: 14;" text="Update available" visible="false">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
                            </children>
-                        </HBox>
-                        <HBox fx:id="installHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" visible="false">
+                           <StackPane.margin>
+                              <Insets />
+                           </StackPane.margin>
+                        </FlowPane>
+                        <FlowPane fx:id="installPane" alignment="CENTER" hgap="30.0" vgap="20.0" visible="false">
                            <children>
                               <StackPane>
                                  <children>
@@ -94,7 +157,7 @@
                                  </font>
                               </Label>
                            </children>
-                        </HBox>
+                        </FlowPane>
                      </children>
                   </StackPane>
                </children>
@@ -106,4 +169,4 @@
          </padding>
       </VBox>
    </children>
-</fx:root>
+</AnchorPane>

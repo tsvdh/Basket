@@ -1,6 +1,6 @@
 package server.common.model.app;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import lombok.Data;
 
 @Data
@@ -12,7 +12,7 @@ public class Release {
 
     private String version;
 
-    private LocalDate date;
+    private OffsetDateTime date;
 
     private Type type;
 }

@@ -1,6 +1,6 @@
 package server.common.model.user;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import lombok.Data;
 
 @Data
@@ -14,7 +14,7 @@ public class User {
 
     private String encodedPassword;
 
-    private HashSet<String> userOf;
+    private HashMap<String, AppUsage> usageInfo;
 
     private boolean developer;
 

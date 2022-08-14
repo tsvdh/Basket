@@ -1,9 +1,11 @@
 package core.store;
 
+import basket.api.prebuilt.Message;
 import core.Basket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -14,8 +16,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import server.ServerConnectionException;
 import server.ServerHandler;
+import server.ServerHandler.LibraryAction;
 import server.common.FileName;
 import server.common.model.app.App;
+import server.common.model.user.User;
 
 import static util.ThreadHandler.execute;
 
@@ -23,7 +27,7 @@ public class StoreItem extends AnchorPane {
 
     private final App app;
 
-    public StoreItem(App app) {
+    public StoreItem(App app, User user) {
         super();
 
         URL fxmlUrl = getClass().getResource("/fxml/store_item.fxml");
@@ -56,6 +60,9 @@ public class StoreItem extends AnchorPane {
 
         if (!app.isAvailable()) {
             addButton.setDisable(true);
+            addButton.setText("Not available yet");
+        } else if (user.getUsageInfo().containsKey(app.getId())) {
+            addButton.setDisable(true);
             addButton.setText("In library");
         }
     }
@@ -80,30 +87,32 @@ public class StoreItem extends AnchorPane {
 
     @FXML
     public void addToLibrary() {
-        if (!app.isAvailable()) {
-            return;
-        }
+        // will only be executed if app is available and not in library yet
 
         addButton.setVisible(false);
         progressBar.setVisible(true);
 
-        var task = new AcquireTask(app);
-
-        task.setOnSucceeded(event -> {
-
+        // try to notify server
+        try {
+            ServerHandler.getInstance().modifyLibrary(app.getId(), LibraryAction.add);
+        } catch (ServerConnectionException e) {
+            Platform.runLater(() -> new Message("Could not connect to server", true));
+            return;
+        } finally {
             addButton.setVisible(true);
             progressBar.setVisible(false);
+        }
 
-            if (task.getValue()) {
+        addButton.setDisable(true);
+        addButton.setText("In library");
 
-                // update library
-                addButton.setDisable(true);
-                addButton.setText("In library");
+        try {
+            Basket.getInstance().refreshUser();
+        } catch (ServerConnectionException e) {
+            Platform.runLater(() -> new Message("Could not connect to server,"
+                    + "\nplease refresh library with internet access", true));
+        }
 
-                Basket.getInstance().loadLibrary();
-            }
-        });
-
-        execute(task);
+        Basket.getInstance().loadLibrary();
     }
 }

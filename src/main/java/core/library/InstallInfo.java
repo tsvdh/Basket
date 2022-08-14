@@ -8,7 +8,7 @@ import server.common.model.app.Release;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TempAppInfo {
+public class InstallInfo {
 
     private boolean installed;
     private Release currentRelease;

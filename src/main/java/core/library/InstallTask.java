@@ -18,10 +18,8 @@ import lombok.RequiredArgsConstructor;
 import net.lingala.zip4j.ZipFile;
 import server.ServerConnectionException;
 import server.ServerHandler;
-import server.ServerHandler.LibraryAction;
 import server.common.FileName;
 import server.common.model.app.Release;
-import server.common.model.user.User;
 
 import static basket.api.handlers.FileHandler.copyPathAndContent;
 import static basket.api.handlers.FileHandler.deletePathAndContent;
@@ -62,37 +60,21 @@ public class InstallTask extends Task<Boolean> {
         Path imageZipPath = appHomePath.resolve("image.zip");
         Path backupPath = appHomePath.resolve("backup_image");
 
-        Path persistentInfoPath = PathHandler.getAppDataPath(appId).resolve("_info.json");
         Path tempInfoPath = appHomePath.resolve("_info.json");
 
-        // handle info files
-        JSONHandler<PersistentAppInfo> persistentInfoHandler;
-        JSONHandler<TempAppInfo> tempInfoHandler;
+        // handle info file
+        JSONHandler<InstallInfo> installInfoHandler;
         try {
-            persistentInfoHandler = new JSONHandler<>(persistentInfoPath);
-            tempInfoHandler = new JSONHandler<>(tempInfoPath);
+            installInfoHandler = new JSONHandler<>(tempInfoPath);
         } catch (IOException e) {
             Platform.runLater(() -> new Message("Could not read file: " + e.getMessage(), true));
             return false;
         }
 
-        var tempAppInfo = tempInfoHandler.getObject();
-
-        // notify server if needed
-        if (!persistentInfoHandler.getObject().isServerNotifiedOfAcquisition()) {
-            try {
-                User user = ServerHandler.getInstance().getUserInfo();
-                if (!user.getUserOf().contains(appId)) {
-                    ServerHandler.getInstance().modifyLibrary(appId, LibraryAction.add);
-                }
-            } catch (ServerConnectionException e) {
-                Platform.runLater(() -> new Message("Could not sync with server", true));
-                return false;
-            }
-        }
+        var installInfo = installInfoHandler.getObject();
 
         // backup files
-        if (tempAppInfo.isInstalled()) {
+        if (installInfo.isInstalled()) {
             updateMessage("Backing up");
             updateProgress(-1, 1);
             try {
@@ -169,7 +151,7 @@ public class InstallTask extends Task<Boolean> {
             }
         }
         catch (IOException | RuntimeException e) {
-            if (!tempAppInfo.isInstalled()) {
+            if (!installInfo.isInstalled()) {
                 try {
                     deletePathAndContent(imagePath);
                     deletePathAndContent(imageZipPath);
@@ -186,8 +168,8 @@ public class InstallTask extends Task<Boolean> {
                     try {
                         Platform.runLater(() -> new Message("Backup failed: " + e, true));
 
-                        tempAppInfo.setInstalled(false);
-                        tempInfoHandler.save();
+                        installInfo.setInstalled(false);
+                        installInfoHandler.save();
                     }
                     catch (IOException fatal) {
                         Platform.runLater(() -> new Message("This app is broken. Try to uninstall the app later", true));
@@ -206,15 +188,15 @@ public class InstallTask extends Task<Boolean> {
         }
 
         // update info about install
-        if (!tempAppInfo.isInstalled()) {
-            tempAppInfo.setInstalled(true);
+        if (!installInfo.isInstalled()) {
+            installInfo.setInstalled(true);
         }
-        tempAppInfo.setCurrentRelease(release);
+        installInfo.setCurrentRelease(release);
 
-        // try saving info, if user stops trying install-tasks are kept and can be tried again
+        // try saving info, if user stops trying the install-tasks are kept and can be tried again later
         while (true) {
             try {
-                tempInfoHandler.save();
+                installInfoHandler.save();
                 break;
             } catch (IOException e) {
                 String question = "Could not save info, please free %s. Try again?".formatted(tempInfoPath);

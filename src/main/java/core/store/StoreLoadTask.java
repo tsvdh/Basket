@@ -1,8 +1,8 @@
 package core.store;
 
 import core.Basket;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 import server.ServerConnectionException;
@@ -25,12 +25,9 @@ public class StoreLoadTask extends Task<List<Node>> {
                     event -> Basket.getInstance().loadStore()));
         }
 
-        List<Node> items = new LinkedList<>();
-
-        apps.sort(comparing(App::getName));
-
-        apps.forEach(app -> items.add(new StoreItem(app)));
-
-        return items;
+        return apps.stream()
+                .sorted(comparing((App::getName)))
+                .map(app -> new StoreItem(app, Basket.getInstance().getUserInfo()))
+                .collect(Collectors.toList());
     }
 }

@@ -3,19 +3,19 @@ User folder\Appdata\Roaming\Basket
 |
 +--apps
 |  |
-|  +--data
+|  +--data => user specific
 |  |  |
 |  |  +--.self
 |  |  |  |
+|  |  |  +--user.json
+|  |  |  |
 |  |  |  +--settings.json
 |  |  |
-|  |  +--(Sudoku id)
+|  |  +--(Sudoku id) - created at library add
 |  |  |  |
-|  |  |  +--app.json - created at acquisition
+|  |  |  +--_info.json (offline) - created at library add
 |  |  |  |
 |  |  |  +--settings.json - created at app launch
-|  |  |  |
-|  |  |  +--_info.json (persistent) - created at acquisition
 |  |  |
 |  |  +--(Snake id)
 |  |  |
@@ -23,11 +23,13 @@ User folder\Appdata\Roaming\Basket
 |  |
 |  +--library
 |  |  |
-|  |  +--(Sudoku id)
+|  |  +--(Sudoku id) - created at library add
 |  |  |  |
-|  |  |  +--_info.json (temp) - created at acquisition
+|  |  |  +--icon.png - created at library add
 |  |  |  |
-|  |  |  +--icon.png - created at acquisition
+|  |  |  +--app.json - created at library add
+|  |  |  |
+|  |  |  +--_info.json (install) - created at library add
 |  |  |  |
 |  |  |  +--image - created at install
 |  |  |
@@ -42,9 +44,10 @@ User folder\Appdata\Roaming\Basket
 |  +--style
 
 
-All files created at acquisition are guaranteed to exist after item is loaded in library.
+All files created at library add are guaranteed to exist after item is loaded in library.
 
-Tell server of app acquisition:
-case 1 (-  ): can't tell server, we know of it. tell server later, as he says he doesn't know
-case 2 (+ -): told server, but we don't know it. try to tell server later, but he tells he knows already
-case 3 (+ +): told server and we know it, don't do anything later (default behaviour)
+
+Server library is master, client follows
+
+case internet: server library is received, new apps are added to client and all are synced with server
+case no internet: local library is used, if app is missing files app is marked as broken. will be fixed on server sync
