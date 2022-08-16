@@ -66,7 +66,7 @@ public class Basket {
 
             if (userInfo == null && Files.exists(userInfoPath)) {
                 try {
-                    userInfoHandler = new JSONHandler<>(userInfoPath);
+                    userInfoHandler = JSONHandler.read(userInfoPath, User.class);
                     userInfo = userInfoHandler.getObject();
                 } catch (IOException ignored) {}
             }

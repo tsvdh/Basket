@@ -24,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -55,7 +56,7 @@ public class LibraryItem extends AnchorPane {
         super();
 
         Path appInfoPath = PathHandler.getAppLibraryPath(appId).resolve("app.json");
-        this.app = new JSONHandler<App>(appInfoPath).getObject();
+        this.app = JSONHandler.read(appInfoPath, App.class).getObject();
 
         this.iconArray = getIconArray(false);
 
@@ -124,76 +125,76 @@ public class LibraryItem extends AnchorPane {
     // --- Init
 
     @FXML
-    private Label nameLabel;
+    public Label nameLabel;
 
     @FXML
-    private ImageView appIcon;
+    public ImageView appIcon;
 
     // ---
     // --- Install
 
     @FXML
-    private FlowPane controlPane;
+    public FlowPane controlPane;
 
     @FXML
-    private FlowPane installPane;
+    public FlowPane installPane;
 
     @FXML
-    private Label progressLabel;
+    public Label progressLabel;
 
     @FXML
-    private ProgressBar loadingBar;
+    public ProgressBar loadingBar;
 
     @FXML
-    private ProgressBar progressBar;
+    public ProgressBar progressBar;
 
     // ---
     // --- Refresh
 
     @FXML
-    private Label lastUsedLabel;
+    public Label lastUsedLabel;
 
     @FXML
-    private Label timeUsedLabel;
+    public Label timeUsedLabel;
 
     @FXML
-    private Button launchButton;
+    public Button launchButton;
 
     @FXML
-    private Button installButton;
+    public SplitMenuButton installButton;
 
     @FXML
-    private MenuItem installExperimentalButton;
+    public MenuItem installExperimentalButton;
 
     @FXML
-    private HBox statusHBox;
+    public HBox statusHBox;
 
     @FXML
-    private Button refreshButton;
+    public Button refreshButton;
 
     @FXML
-    private ImageView errorIcon;
+    public ImageView errorIcon;
 
     @FXML
-    private ImageView diskStatusIcon;
+    public ImageView diskStatusIcon;
 
     @FXML
-    private ImageView cloudStatusIcon;
+    public ImageView cloudStatusIcon;
 
     @FXML
-    private Label updateLabel;
+    public Label updateLabel;
 
     @FXML
-    private MenuButton optionsButton;
+    public MenuButton optionsButton;
 
     @FXML
-    private MenuItem updateButton;
+    public MenuItem updateButton;
 
     @FXML
-    private CheckMenuItem experimentalCheckItem;
+    public CheckMenuItem experimentalCheckItem;
 
     @FXML
-    private CheckMenuItem stableCheckItem;
+    public CheckMenuItem stableCheckItem;
 
     // @FXML
     // public void launch() {
@@ -328,7 +329,7 @@ public class LibraryItem extends AnchorPane {
             if (results.contains(Result.RUNNABLE)) {
                 try {
                     Path infoPath = PathHandler.getAppLibraryPath(app.getId()).resolve("_info.json");
-                    installInfo = new JSONHandler<InstallInfo>(infoPath).getObject();
+                    installInfo = JSONHandler.read(infoPath, InstallInfo.class).getObject();
                 } catch (IOException e) {
                     // Should not happen, RUNNABLE result ensures all files exist
                     throw new FatalError(e);
@@ -382,35 +383,37 @@ public class LibraryItem extends AnchorPane {
     }
 
     @FXML
-    void launch() {
-
-    }
-    @FXML
-    void installStable() {
-
-    }
-    @FXML
-    void installExperimental() {
+    public void launch() {
 
     }
 
     @FXML
-    void update() {
+    public void installStable() {
 
     }
 
     @FXML
-    void swapToExperimental() {
+    public void installExperimental() {
 
     }
 
     @FXML
-    void swapToStable() {
+    public void update() {
 
     }
 
     @FXML
-    void remove() {
+    public void swapToExperimental() {
+
+    }
+
+    @FXML
+    public void swapToStable() {
+
+    }
+
+    @FXML
+    public void remove() {
 
     }
 

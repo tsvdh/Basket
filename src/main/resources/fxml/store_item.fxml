@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" prefHeight="200.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="core.store.StoreItem">
+<fx:root maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" prefHeight="200.0" prefWidth="1000.0" type="AnchorPane" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox prefHeight="200.0" prefWidth="1000.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -40,7 +40,7 @@
                   </Label>
                   <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="40.0" prefWrapLength="500.0" vgap="20.0">
                      <children>
-                        <Label fx:id="ratingLabel" text="4.2 (123)" textFill="GREEN">
+                        <Label fx:id="ratingLabel" style="-fx-font-size: 15; -fx-text-fill: GREEN;" text="4.2 (123)" textFill="GREEN">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -66,4 +66,4 @@
          </padding>
       </VBox>
    </children>
-</AnchorPane>
+</fx:root>

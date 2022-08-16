@@ -57,7 +57,7 @@ public class ThreadHandler {
         if (runnable instanceof Task<?> task) {
             task.exceptionProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
-                    System.err.printf("Exception in thread \"%s\": ", Thread.currentThread().getName());
+                    System.err.printf("Exception in thread '%s': ", Thread.currentThread().getName());
                     newValue.printStackTrace();
                 }
             });

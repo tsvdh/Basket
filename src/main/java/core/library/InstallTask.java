@@ -65,7 +65,7 @@ public class InstallTask extends Task<Boolean> {
         // handle info file
         JSONHandler<InstallInfo> installInfoHandler;
         try {
-            installInfoHandler = new JSONHandler<>(tempInfoPath);
+            installInfoHandler = JSONHandler.read(tempInfoPath, InstallInfo.class);
         } catch (IOException e) {
             Platform.runLater(() -> new Message("Could not read file: " + e.getMessage(), true));
             return false;
