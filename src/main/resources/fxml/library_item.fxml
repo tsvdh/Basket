@@ -8,6 +8,7 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitMenuButton?>
@@ -54,6 +55,7 @@
                            <font>
                               <Font size="13.0" />
                            </font></Button>
+                        <ProgressIndicator fx:id="refreshIndicator" focusTraversable="false" visible="false" />
                      </children>
                   </HBox>
                </children>

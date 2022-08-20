@@ -5,6 +5,7 @@ import basket.api.handlers.JSONHandler;
 import basket.api.handlers.PathHandler;
 import basket.api.prebuilt.Confirmation;
 import basket.api.prebuilt.Message;
+import core.library.InstallTask.Result;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.scene.control.ProgressBar;
 import lombok.RequiredArgsConstructor;
 import net.lingala.zip4j.ZipFile;
 import server.ServerConnectionException;
@@ -25,33 +25,21 @@ import static basket.api.handlers.FileHandler.copyPathAndContent;
 import static basket.api.handlers.FileHandler.deletePathAndContent;
 import static java.lang.Math.pow;
 import static org.apache.commons.io.IOUtils.closeQuietly;
-import static util.Util.signEqual;
 import static util.Util.toMB;
 
 @RequiredArgsConstructor
-public class InstallTask extends Task<Boolean> {
+public class InstallTask extends Task<Result> {
+
+    public enum Result {
+        INSTALL_CHANGED,
+        INSTALL_KEPT
+    }
 
     private final String appId;
     private final Release release;
 
-    public void bindBars(ProgressBar progressBar, ProgressBar loadingBar) {
-        this.progressProperty().addListener((observable, oldValue, newValue) -> {
-
-            if (signEqual(oldValue, newValue)) {
-                return; // no change as same bar should be kept
-            }
-
-            boolean loading = newValue.floatValue() == -1;
-
-            loadingBar.setVisible(loading);
-            progressBar.setVisible(!loading);
-        });
-
-        progressBar.progressProperty().bind(this.progressProperty());
-    }
-
     @Override
-    protected Boolean call() {
+    protected Result call() {
         updateMessage("Setting up");
         updateProgress(0, 1);
 
@@ -68,7 +56,7 @@ public class InstallTask extends Task<Boolean> {
             installInfoHandler = JSONHandler.read(tempInfoPath, InstallInfo.class);
         } catch (IOException e) {
             Platform.runLater(() -> new Message("Could not read file: " + e.getMessage(), true));
-            return false;
+            return Result.INSTALL_KEPT;
         }
 
         var installInfo = installInfoHandler.getObject();
@@ -82,7 +70,7 @@ public class InstallTask extends Task<Boolean> {
                 copyPathAndContent(imagePath, backupPath);
             } catch (IOException e) {
                 Platform.runLater(() -> new Message("Could not create backup", true));
-                return false;
+                return Result.INSTALL_KEPT;
             }
         }
 
@@ -101,7 +89,7 @@ public class InstallTask extends Task<Boolean> {
             } catch (IOException ignored) {}
 
             Platform.runLater(() -> new Message("Could not download from server", true));
-            return false;
+            return Result.INSTALL_KEPT;
         }
 
         InputStream imageInStream = null;
@@ -158,6 +146,7 @@ public class InstallTask extends Task<Boolean> {
                 } catch (IOException ignored) {}
 
                 Platform.runLater(() -> new Message("Install failed: " + e, true));
+                return Result.INSTALL_KEPT;
             }
             else {
                 updateMessage("Restoring");
@@ -173,14 +162,16 @@ public class InstallTask extends Task<Boolean> {
                     }
                     catch (IOException fatal) {
                         Platform.runLater(() -> new Message("This app is broken. Try to uninstall the app later", true));
+                        return Result.INSTALL_KEPT;
                     }
+                    return Result.INSTALL_CHANGED;
                 }
                 try {
                     deletePathAndContent(backupPath);
                 } catch (IOException ignored) {}
-            }
 
-            return false;
+                return Result.INSTALL_KEPT;
+            }
         }
         finally {
             closeQuietly(imageInStream);
@@ -201,11 +192,11 @@ public class InstallTask extends Task<Boolean> {
             } catch (IOException e) {
                 String question = "Could not save info, please free %s. Try again?".formatted(tempInfoPath);
                 if (!new Confirmation(question).getResult()) {
-                    return false;
+                    return Result.INSTALL_KEPT;
                 }
             }
         }
 
-        return true;
+        return Result.INSTALL_CHANGED;
     }
 }

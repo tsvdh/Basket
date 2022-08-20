@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.stage.Stage?>
 
-<Stage title="Basket" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="core.BasketController">
+<Stage title="Basket" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="core.BasketController">
     <scene>
         <Scene>
             <AnchorPane prefHeight="700.0" prefWidth="1000.0">
@@ -53,9 +53,9 @@
                      </MenuBar>
                   </top>
                   <center>
-                     <TabPane fx:id="tabPane" focusTraversable="false" styleClass="underlined" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMinHeight="1.0" BorderPane.alignment="CENTER">
+                     <TabPane fx:id="tabPane" focusTraversable="false" styleClass="underlined" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" BorderPane.alignment="CENTER">
                         <tabs>
-                           <Tab closable="false" style="-fx-font-size: 26; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" text="Store">
+                           <Tab closable="false" style="-fx-font-size: 23; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" text="Store">
                               <content>
                                  <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false">
                                     <content>
@@ -64,7 +64,7 @@
                                  </ScrollPane>
                               </content>
                            </Tab>
-                           <Tab closable="false" style="-fx-font-size: 26; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" text="Library">
+                           <Tab closable="false" style="-fx-font-size: 23; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" text="Library">
                               <content>
                                  <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false">
                                     <content>
