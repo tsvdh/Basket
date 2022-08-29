@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import core.library.OfflineAppInfo.Session;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieManager;
@@ -22,12 +21,14 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import main.Main;
+import server.common.AppSession;
 import server.common.model.app.App;
 import server.common.model.user.User;
 import util.ThreadHandler;
 
 import static basket.api.util.uri.URIConstructor.makeURI;
 import static basket.api.util.uri.URIConstructor.newURIBuilder;
+import static java.net.http.HttpRequest.BodyPublishers.ofString;
 
 public class ServerHandler {
 
@@ -253,14 +254,22 @@ public class ServerHandler {
         }
     }
 
-    public void notifyAppSession(String appId, Session session) throws ServerConnectionException {
+
+
+    public void notifyAppSession(String appId, List<AppSession> sessions) throws ServerConnectionException {
+        String jsonString;
+        try {
+            jsonString = objectMapper.writeValueAsString(sessions);
+        } catch (JsonProcessingException e) {
+            throw new FatalError(e);
+        }
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(newURIBuilder(address + "/api/v1/user/info/session")
                         .addKeyValuePair("appId", appId)
-                        .addKeyValuePair("start", session.getStart().toString())
-                        .addKeyValuePair("end", session.getEnd().toString())
                         .build())
-                .POST(BodyPublishers.noBody())
+                .header("Content-Type", "application/json")
+                .POST(ofString(jsonString))
                 .build();
 
         HttpResponse<Void> response;

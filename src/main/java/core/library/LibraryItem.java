@@ -6,8 +6,8 @@ import basket.api.prebuilt.Message;
 import basket.api.util.FatalError;
 import core.Basket;
 import core.library.LibraryRefreshTask.Result;
-import core.library.OfflineAppInfo.Session;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -16,8 +16,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -40,6 +42,7 @@ import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 import server.ServerConnectionException;
 import server.ServerHandler;
+import server.common.AppSession;
 import server.common.FileName;
 import server.common.model.app.App;
 import server.common.model.app.Release;
@@ -215,11 +218,10 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void refresh() {
-        // TODO: read session from disk
         refresh(null);
     }
 
-    public void refresh(Session session) {
+    public void refresh(AppSession session) {
         buttons.forEach(button -> button.setDisable(true));
         refreshIndicator.setVisible(true);
 
@@ -298,55 +300,48 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void launch() {
-        // Path executable = Util.getAppLibraryPath(appId).resolve();
-        // if (!Files.exists(executable)) {
-        //     // TODO: invoke repair
-        //     launchButton.setDisable(true);
-        //     new Message("This app is broken", true);
-        //     return;
-        // }
-        //
-        // Process process;
-        // try {
-        //     process = getRuntime().exec(executable.toString());
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        //     new Message("Unable to launch the app", true);
-        //     return;
-        // }
-        //
-        // launchButton.setText("Stop");
-        // launchButton.setOnAction(event -> {
-        //     process.descendants().forEach(ProcessHandle::destroy);
-        //     process.destroy();
-        // });
-        //
-        // long startTime = System.currentTimeMillis();
-        //
-        // process.onExit().thenRun(() -> Platform.runLater(() -> {
-        //     launchButton.setText("Launch");
-        //     launchButton.setOnAction(event -> launch());
-        //
-        //     try {
-        //         ExternalPropertiesHandler persistentInfoHandler = new ExternalPropertiesHandler(
-        //                 PathHandler.getDataFolderOfAppPath(appName).resolve("info.properties"), null);
-        //         Duration timeUsed = (Duration) persistentInfoHandler.getProperty(OfflineAppInfo.time_used);
-        //
-        //         long millisUsed = System.currentTimeMillis() - startTime;
-        //         timeUsed = timeUsed.plusMillis(millisUsed);
-        //         LocalDate lastUsed = LocalDate.now();
-        //
-        //         persistentInfoHandler
-        //                 .setProperty(OfflineAppInfo.time_used, timeUsed)
-        //                 .setProperty(OfflineAppInfo.last_used, lastUsed)
-        //                 .save();
-        //
-        //         showPersistentInfo(timeUsed, lastUsed);
-        //     }
-        //     catch (IOException e) {
-        //         new Message(e.toString(), true);
-        //     }
-        // }));
+        Path imagePath = PathHandler.getAppLibraryPath(app.getId()).resolve("image");
+        Path executablePath;
+
+        try {
+            JSONHandler<LinkedHashMap<String, String>> configHandler = JSONHandler.read(imagePath.resolve("basketConfig.json"));
+            executablePath = Path.of(configHandler.getObject().get("executablePath"));
+
+            if (Files.notExists(executablePath)) {
+                throw new FileNotFoundException();
+            }
+        } catch (IOException | NullPointerException e) {
+            launchButton.setDisable(true);
+            new Message("Installed app is invalid, please re-install", true);
+            return;
+        }
+
+        var builder = new ProcessBuilder()
+                .command(executablePath.toString());
+
+        Process process;
+        try {
+            process = builder.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            new Message("Unable to launch the app", true);
+            return;
+        }
+
+        launchButton.setText("Stop");
+        launchButton.setOnAction(event -> {
+            process.descendants().forEach(ProcessHandle::destroy);
+            process.destroy();
+        });
+
+        var start = OffsetDateTime.now();
+
+        process.onExit().thenRun(() -> Platform.runLater(() -> {
+            launchButton.setText("Launch");
+            launchButton.setOnAction(event -> launch());
+
+            refresh(new AppSession(start, OffsetDateTime.now()));
+        }));
     }
 
     @FXML
@@ -356,7 +351,8 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void installExperimental() {
-        executeInstallTask(app.getExperimental());
+        refresh(new AppSession(OffsetDateTime.now().minusMinutes(10), OffsetDateTime.now()));
+        // executeInstallTask(app.getExperimental());
     }
 
     @FXML
@@ -380,8 +376,8 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void remove() {
-        // TODO: add functionality to install task
-        new Message("This does not work yet", false);
+        // // TODO: add functionality to install task
+        // new Message("This does not work yet", false);
     }
 
     private void showPersistentInfo() {

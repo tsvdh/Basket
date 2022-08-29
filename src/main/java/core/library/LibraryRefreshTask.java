@@ -5,19 +5,20 @@ import basket.api.handlers.PathHandler;
 import basket.api.prebuilt.Message;
 import core.Basket;
 import core.library.LibraryRefreshTask.Result;
-import core.library.OfflineAppInfo.Session;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import org.jetbrains.annotations.Nullable;
 import server.ServerConnectionException;
 import server.ServerHandler;
+import server.common.AppSession;
 import server.common.FileName;
 import server.common.model.app.App;
 
@@ -36,9 +37,9 @@ public class LibraryRefreshTask extends Task<Set<Result>> {
 
     private final App app;
     private final byte[] iconArray;
-    private final Session session;
+    private final AppSession session;
 
-    public LibraryRefreshTask(App app, byte @Nullable [] iconArray, @Nullable Session session) {
+    public LibraryRefreshTask(App app, byte @Nullable [] iconArray, @Nullable AppSession session) {
         this.app = app;
         this.iconArray = iconArray;
         this.session = session;
@@ -81,29 +82,54 @@ public class LibraryRefreshTask extends Task<Set<Result>> {
 
         boolean uploaded = true;
 
+        List<AppSession> sessions = new LinkedList<>();
         if (session != null) {
+            sessions.add(session);
+        }
+        if (offlineInfoHandler != null) {
+            var diskSessions = List.copyOf(offlineInfoHandler.getObject().getSessions());
+            sessions.addAll(diskSessions);
+
             try {
-                ServerHandler.getInstance().notifyAppSession(app.getId(), session);
+                offlineInfoHandler.getObject().getSessions().clear();
+                offlineInfoHandler.save();
+            } catch (IOException e) {
+                sessions.removeAll(diskSessions);
+                uploaded = false;
+            }
+        }
+
+        if (!sessions.isEmpty()) {
+            boolean newUser = true;
+            try {
+                ServerHandler.getInstance().notifyAppSession(app.getId(), sessions);
             } catch (ServerConnectionException serverException) {
                 uploaded = false;
+                newUser = false;
 
-                if (offlineInfoHandler != null) {
+                if (session != null && offlineInfoHandler != null) {
                     try {
                         offlineInfoHandler.getObject().getSessions().add(session);
                         offlineInfoHandler.save();
                     } catch (IOException ioException) {
-                        // nothing to sync again as info is lost, so upload is technically complete
-                        uploaded = true;
+
+                        // if nothing is on disk to upload later, upload is complete
+                        if (offlineInfoHandler.getObject().getSessions().isEmpty()) {
+                            uploaded = true;
+                        }
 
                         offlineInfoHandler.getObject().getSessions().remove(session);
                         Platform.runLater(() -> new Message("Session could not be saved", true));
                     }
                 }
             }
-            try {
-                Basket.getInstance().refreshUser();
-            } catch (ServerConnectionException e) {
-                System.err.println("Could not refresh user");
+
+            if (newUser) {
+                try {
+                    Basket.getInstance().refreshUser();
+                } catch (ServerConnectionException e) {
+                    System.err.println("Could not refresh user");
+                }
             }
         }
 
