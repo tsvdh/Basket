@@ -2,6 +2,8 @@ package main;
 
 import basket.api.app.BasketApp;
 import basket.api.handlers.StyleHandler;
+import basket.api.handlers.StyleHandler.ApiStyle;
+import basket.api.handlers.StyleHandlerBuilder;
 import basket.api.prebuilt.Message;
 import core.Basket;
 import javafx.application.Application;
@@ -29,7 +31,12 @@ public class Main extends Application {
         @Override
         protected StyleHandler makeStyleHandler() {
             Style jMetroStyle = getSettingsHandler().getConvertedObject(Settings.class).getJmetroStyle();
-            return new StyleHandler(jMetroStyle);
+
+            return new StyleHandlerBuilder()
+                    .setApiStyle(ApiStyle.JMETRO_TWEAKED)
+                    .setJMetroStyle(jMetroStyle)
+                    // .addFilePath("/style/test.css")
+                    .build();
         }
     }
 

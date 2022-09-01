@@ -17,6 +17,7 @@ module basket {
 
     opens data to basket.api;
     opens images to basket.api;
+    opens style to basket.api;
 
     exports core;
     exports core.library;

@@ -3,7 +3,7 @@ User folder\Appdata\Roaming\Basket
 |
 +--apps
 |  |
-|  +--data => user specific
+|  +--data
 |  |  |
 |  |  +--.self
 |  |  |  |
@@ -38,10 +38,6 @@ User folder\Appdata\Roaming\Basket
 |  |  +--(Cards id)
 |
 +--image
-|
-+--resources
-|  |
-|  +--style
 
 
 All files created at library add are guaranteed to exist after item is loaded in library.
