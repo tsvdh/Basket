@@ -254,9 +254,7 @@ public class ServerHandler {
         }
     }
 
-
-
-    public void notifyAppSession(String appId, List<AppSession> sessions) throws ServerConnectionException {
+    public void notifyAppSessions(String appId, List<AppSession> sessions) throws ServerConnectionException {
         String jsonString;
         try {
             jsonString = objectMapper.writeValueAsString(sessions);

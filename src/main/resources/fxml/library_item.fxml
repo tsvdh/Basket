@@ -55,7 +55,7 @@
                            <font>
                               <Font size="13.0" />
                            </font></Button>
-                        <ProgressIndicator fx:id="refreshIndicator" focusTraversable="false" visible="false" />
+                        <ProgressIndicator fx:id="refreshIndicator" focusTraversable="false" maxHeight="30.0" visible="false" />
                      </children>
                   </HBox>
                </children>

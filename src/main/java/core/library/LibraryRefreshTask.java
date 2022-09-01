@@ -100,16 +100,16 @@ public class LibraryRefreshTask extends Task<Set<Result>> {
         }
 
         if (!sessions.isEmpty()) {
-            boolean newUser = true;
+            boolean shouldRefreshUser = true;
             try {
-                ServerHandler.getInstance().notifyAppSession(app.getId(), sessions);
+                ServerHandler.getInstance().notifyAppSessions(app.getId(), sessions);
             } catch (ServerConnectionException serverException) {
                 uploaded = false;
-                newUser = false;
+                shouldRefreshUser = false;
 
-                if (session != null && offlineInfoHandler != null) {
+                if (offlineInfoHandler != null) {
                     try {
-                        offlineInfoHandler.getObject().getSessions().add(session);
+                        offlineInfoHandler.getObject().getSessions().addAll(sessions);
                         offlineInfoHandler.save();
                     } catch (IOException ioException) {
 
@@ -118,13 +118,13 @@ public class LibraryRefreshTask extends Task<Set<Result>> {
                             uploaded = true;
                         }
 
-                        offlineInfoHandler.getObject().getSessions().remove(session);
-                        Platform.runLater(() -> new Message("Session could not be saved", true));
+                        offlineInfoHandler.getObject().getSessions().removeAll(sessions);
+                        Platform.runLater(() -> new Message("Session(s) could not be saved", true));
                     }
                 }
             }
 
-            if (newUser) {
+            if (shouldRefreshUser) {
                 try {
                     Basket.getInstance().refreshUser();
                 } catch (ServerConnectionException e) {
