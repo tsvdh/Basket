@@ -46,6 +46,10 @@ public class StoreItem extends AnchorPane {
         nameLabel.setText(app.getName());
         descriptionLabel.setText(app.getDescription());
 
+        Float grade = app.getAppStats().getRating().getGrade();
+        ratingLabel.setText("%s (%s)".formatted(grade != null ? grade : "-",
+                                                app.getAppStats().getRating().getReviews().keySet().size()));
+
         execute(() -> {
             try {
                 InputStream iconStream = ServerHandler.getInstance()

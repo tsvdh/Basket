@@ -1,5 +1,6 @@
 package core.library;
 
+import basket.api.handlers.FileHandler;
 import basket.api.handlers.JSONHandler;
 import basket.api.handlers.PathHandler;
 import basket.api.prebuilt.Message;
@@ -253,13 +254,14 @@ public class LibraryItem extends AnchorPane {
 
                 if (!installInfo.isInstalled()) {
                     launchButton.setVisible(false);
-                    installButton.setVisible(true);
                     optionsButton.setDisable(true);
 
                     if (app.getExperimental() == null) {
                         installExperimentalButton.setDisable(true);
                     }
                 } else {
+                    launchButton.setVisible(true);
+
                     switch (installInfo.getCurrentRelease().getType()) {
                         case STABLE -> {
                             if (installInfo.getCurrentRelease().getDate()
@@ -351,8 +353,7 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void installExperimental() {
-        refresh(new AppSession(OffsetDateTime.now().minusMinutes(10), OffsetDateTime.now()));
-        // executeInstallTask(app.getExperimental());
+        executeInstallTask(app.getExperimental());
     }
 
     @FXML
@@ -376,8 +377,34 @@ public class LibraryItem extends AnchorPane {
 
     @FXML
     public void remove() {
-        // // TODO: add functionality to install task
-        // new Message("This does not work yet", false);
+        Path infoPath = PathHandler.getAppLibraryPath(app.getId()).resolve("_info.json");
+
+        JSONHandler<InstallInfo> installInfoHandler;
+        try {
+            installInfoHandler = JSONHandler.read(infoPath, InstallInfo.class);
+        } catch (IOException ignored) {
+            installInfoHandler = null;
+        }
+
+        try {
+            if (installInfoHandler != null) {
+                installInfoHandler.getObject().setInstalled(false);
+                installInfoHandler.getObject().setCurrentRelease(null);
+                installInfoHandler.save();
+            } else {
+                Files.deleteIfExists(infoPath);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileHandler.deletePathAndContent(PathHandler.getAppLibraryPath(app.getId()).resolve("image"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        refresh();
     }
 
     private void showPersistentInfo() {
@@ -436,7 +463,7 @@ public class LibraryItem extends AnchorPane {
 
         updateLabel.visibleProperty().bind(optionsButton.disableProperty().not().and(updateButton.disableProperty().not()));
 
-        experimentalCheckItem.disableProperty().bind(stableCheckItem.disableProperty().not());
+        experimentalCheckItem.selectedProperty().bind(stableCheckItem.selectedProperty().not());
 
         controlPane.visibleProperty().bind(installPane.visibleProperty().not());
 
@@ -444,6 +471,8 @@ public class LibraryItem extends AnchorPane {
                     cloudStatusIcon.visibleProperty()
                 .or(diskStatusIcon.visibleProperty())
                 .or(errorIcon.visibleProperty()));
+
+        installButton.visibleProperty().bind(launchButton.visibleProperty().not());
     }
 
     private void executeInstallTask(Release release) {

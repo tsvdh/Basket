@@ -40,7 +40,7 @@
                   </Label>
                   <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="40.0" prefWrapLength="500.0" vgap="20.0">
                      <children>
-                        <Label fx:id="ratingLabel" style="-fx-font-size: 15; -fx-text-fill: GREEN;" text="4.2 (123)" textFill="GREEN">
+                        <Label fx:id="ratingLabel" focusTraversable="false" style="-fx-font-size: 15; -fx-text-fill: #0078d7;" text="- (0)" textFill="#0078d7">
                            <font>
                               <Font size="15.0" />
                            </font>
