@@ -10,8 +10,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.http.HttpResponse;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Stream;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import lombok.RequiredArgsConstructor;
@@ -100,7 +105,6 @@ public class InstallTask extends Task<Result> {
             // set up app directory
             deletePathAndContent(imageZipPath);
             deletePathAndContent(imagePath);
-            Files.createDirectory(imagePath);
 
             // download image
             updateMessage("Downloading");
@@ -127,8 +131,32 @@ public class InstallTask extends Task<Result> {
             updateMessage("Extracting");
             updateProgress(-1, 1);
 
+            var env = new HashMap<String, String>();
+            env.put("create", "true");
+
+            String zippedDirectoryName;
+
+            try (FileSystem zipFs = FileSystems.newFileSystem(imageZipPath, env);
+                 Stream<Path> pathStream = Files.list(zipFs.getPath(""))) {
+
+                List<Path> pathList = pathStream.toList();
+                if (pathList.size() == 1 && Files.isDirectory(pathList.get(0))) {
+                    zippedDirectoryName = pathList.get(0).getFileName().toString();
+                } else {
+                    zippedDirectoryName = null;
+                }
+            }
+
             ZipFile zipFile = new ZipFile(imageZipPath.toString());
-            zipFile.extractAll(imagePath.toString());
+            // zipped folder
+            if (zippedDirectoryName != null) {
+                zipFile.extractAll(appHomePath.toString());
+                Files.move(appHomePath.resolve(zippedDirectoryName), imagePath);
+            }
+            // zipped files
+            else {
+                zipFile.extractAll(imagePath.toString());
+            }
 
             try {
                 // delete zip
@@ -139,14 +167,17 @@ public class InstallTask extends Task<Result> {
             }
         }
         catch (IOException | RuntimeException e) {
+            e.printStackTrace();
+
             if (!installInfo.isInstalled()) {
                 try {
                     deletePathAndContent(imagePath);
                     deletePathAndContent(imageZipPath);
-                } catch (IOException ignored) {}
+                } catch (IOException deleteFail) {
+                    deleteFail.printStackTrace();
+                }
 
                 Platform.runLater(() -> new Message("Install failed: " + e, true));
-                return Result.INSTALL_KEPT;
             }
             else {
                 updateMessage("Restoring");
@@ -166,16 +197,19 @@ public class InstallTask extends Task<Result> {
                     }
                     return Result.INSTALL_CHANGED;
                 }
-                try {
-                    deletePathAndContent(backupPath);
-                } catch (IOException ignored) {}
-
-                return Result.INSTALL_KEPT;
             }
+
+            return Result.INSTALL_KEPT;
         }
         finally {
             closeQuietly(imageInStream);
             closeQuietly(imageOutStream);
+
+            try {
+                deletePathAndContent(backupPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         // update info about install

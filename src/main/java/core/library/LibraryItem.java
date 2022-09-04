@@ -274,6 +274,7 @@ public class LibraryItem extends AnchorPane {
                             }
 
                             stableCheckItem.setSelected(true);
+                            experimentalCheckItem.setSelected(false);
                         }
                         case EXPERIMENTAL -> {
                             if (installInfo.getCurrentRelease().getDate()
@@ -282,6 +283,7 @@ public class LibraryItem extends AnchorPane {
                             }
 
                             stableCheckItem.setSelected(false);
+                            experimentalCheckItem.setSelected(true);
                         }
                     }
                 }
@@ -462,8 +464,6 @@ public class LibraryItem extends AnchorPane {
         refreshButton.visibleProperty().bind(statusHBox.hoverProperty());
 
         updateLabel.visibleProperty().bind(optionsButton.disableProperty().not().and(updateButton.disableProperty().not()));
-
-        experimentalCheckItem.selectedProperty().bind(stableCheckItem.selectedProperty().not());
 
         controlPane.visibleProperty().bind(installPane.visibleProperty().not());
 
