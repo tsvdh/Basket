@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.github.tsvdh</groupId>
             <artifactId>basket-api</artifactId>
-            <version>0.6.0</version>
+            <version>0.6.1</version>
         </dependency>
 
         <dependency>
@@ -46,7 +46,13 @@
         <dependency>
             <groupId>com.googlecode.libphonenumber</groupId>
             <artifactId>libphonenumber</artifactId>
-            <version>8.12.52</version>
+            <version>8.12.54</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.1.1</version>
         </dependency>
 
         <!-- for dev with local jar -->
@@ -101,6 +107,34 @@
 <!--                    <artifactId>javafx-web</artifactId>-->
 <!--                </exclusion>-->
 <!--            </exclusions>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>com.pixelduke</groupId>-->
+<!--            <artifactId>FXSkins</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--                <exclusions>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.openjfx</groupId>-->
+<!--                        <artifactId>javafx-base</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.openjfx</groupId>-->
+<!--                        <artifactId>javafx-controls</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.openjfx</groupId>-->
+<!--                        <artifactId>javafx-graphics</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.openjfx</groupId>-->
+<!--                        <artifactId>javafx-media</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.openjfx</groupId>-->
+<!--                        <artifactId>javafx-web</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
 <!--        </dependency>-->
 
 <!--        <dependency>-->
@@ -190,7 +224,7 @@
                             <outputDirectory>${project.build.directory}\modules</outputDirectory>
                             <includeArtifactIds>
                                 jackson-annotations, jackson-core, jackson-databind, basket-api, jna-jpms, jna-platform-jpms,
-                                controlsfx, annotations, jmetro, lombok
+                                controlsfx, annotations, jmetro, lombok, FXSkins
                             </includeArtifactIds>
                         </configuration>
                     </execution>

@@ -119,6 +119,7 @@
                                             </items>
                                           </Menu>
                                           <SeparatorMenuItem mnemonicParsing="false" />
+                                          <SeparatorMenuItem mnemonicParsing="false" />
                                           <MenuItem mnemonicParsing="false" onAction="#remove" text="Remove" />
                                       </items>
                                        <font>
@@ -132,6 +133,11 @@
                                     </Label>
                                  </children>
                               </VBox>
+                              <Button fx:id="reviewButton" mnemonicParsing="false" onAction="#review" style="-fx-font-size: 15;" text="Review">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Button>
                            </children>
                            <StackPane.margin>
                               <Insets />

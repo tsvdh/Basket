@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Scene?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.stage.Stage?>
+<?import org.controlsfx.control.Rating?>
+
+<Stage title="Review" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="core.ReviewController">
+    <scene>
+        <Scene>
+            <AnchorPane>
+            <children>
+               <VBox alignment="CENTER" prefHeight="300.0" prefWidth="400.0" spacing="50.0">
+                  <children>
+                     <Label fx:id="label" focusTraversable="false" style="-fx-font-size: 20;" text="Review">
+                        <font>
+                           <Font size="20.0" />
+                        </font>
+                     </Label>
+                     <Rating fx:id="rating" focusTraversable="false" rating="0.0" updateOnHover="true" />
+                     <Button focusTraversable="false" mnemonicParsing="false" onAction="#submit" style="-fx-font-size: 15;" text="OK">
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                     </Button>
+                  </children>
+               </VBox>
+            </children></AnchorPane>
+        </Scene>
+    </scene>
+</Stage>

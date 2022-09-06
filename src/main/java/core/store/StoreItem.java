@@ -14,6 +14,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import org.controlsfx.control.Rating;
 import server.ServerConnectionException;
 import server.ServerHandler;
 import server.ServerHandler.LibraryAction;
@@ -47,8 +48,9 @@ public class StoreItem extends AnchorPane {
         descriptionLabel.setText(app.getDescription());
 
         Float grade = app.getAppStats().getRating().getGrade();
-        ratingLabel.setText("%s (%s)".formatted(grade != null ? grade : "-",
-                                                app.getAppStats().getRating().getReviews().keySet().size()));
+
+        rating.setRating(grade != null ? grade : 0);
+        ratingLabel.setText("(%s)".formatted(app.getAppStats().getRating().getReviews().keySet().size()));
 
         execute(() -> {
             try {
@@ -81,6 +83,9 @@ public class StoreItem extends AnchorPane {
     public ImageView icon;
 
     @FXML
+    public Rating rating;
+
+    @FXML
     public Label ratingLabel;
 
     @FXML
@@ -98,7 +103,7 @@ public class StoreItem extends AnchorPane {
 
         // try to notify server
         try {
-            ServerHandler.getInstance().modifyLibrary(app.getId(), LibraryAction.add);
+            ServerHandler.getInstance().modifyLibrary(app.getId(), LibraryAction.ADD);
         } catch (ServerConnectionException e) {
             Platform.runLater(() -> new Message("Could not connect to server", true));
             return;

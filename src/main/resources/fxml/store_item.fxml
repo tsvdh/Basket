@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.Rating?>
 
 <fx:root maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" prefHeight="200.0" prefWidth="1000.0" type="AnchorPane" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -40,11 +41,16 @@
                   </Label>
                   <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="40.0" prefWrapLength="500.0" vgap="20.0">
                      <children>
-                        <Label fx:id="ratingLabel" focusTraversable="false" style="-fx-font-size: 15; -fx-text-fill: #0078d7;" text="- (0)" textFill="#0078d7">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
+                        <HBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <Rating fx:id="rating" focusTraversable="false" mouseTransparent="true" partialRating="true" rating="0.0" />
+                              <Label fx:id="ratingLabel" focusTraversable="false" style="-fx-font-size: 15; -fx-text-fill: #0078d7;" text="(0)" textFill="#0078d7">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
                         <StackPane>
                            <children>
                               <Button fx:id="addButton" focusTraversable="false" mnemonicParsing="false" onAction="#addToLibrary" style="-fx-font-size: 15;" text="Add to library">

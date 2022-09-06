@@ -58,9 +58,11 @@ public class Basket {
 
         execute(() -> {
             try {
-                ServerHandler.getInstance().login("userA", "a12341234");
+                ServerHandler.getInstance().login("userC", "a12341234");
                 userInfo = ServerHandler.getInstance().getUserInfo();
-            } catch (ServerConnectionException ignored) {}
+            } catch (ServerConnectionException e) {
+                System.err.println(e.getMessage());
+            }
 
             Path userInfoPath = PathHandler.getExternalFilePath("user.json");
 

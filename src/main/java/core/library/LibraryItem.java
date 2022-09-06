@@ -6,6 +6,7 @@ import basket.api.handlers.PathHandler;
 import basket.api.prebuilt.Message;
 import basket.api.util.FatalError;
 import core.Basket;
+import core.Review;
 import core.library.LibraryRefreshTask.Result;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
@@ -121,7 +122,7 @@ public class LibraryItem extends AnchorPane {
             throw new RuntimeException(e);
         }
 
-        buttons = List.of(launchButton, installButton, refreshButton, optionsButton);
+        buttons = List.of(launchButton, installButton, refreshButton, optionsButton, reviewButton);
         icons = List.of(cloudStatusIcon, diskStatusIcon, errorIcon);
 
         bindSceneProperties();
@@ -212,6 +213,9 @@ public class LibraryItem extends AnchorPane {
     @FXML
     public CheckMenuItem stableCheckItem;
 
+    @FXML
+    public Button reviewButton;
+
     // ---
 
     private List<Node> buttons;
@@ -294,6 +298,11 @@ public class LibraryItem extends AnchorPane {
                 if (results.contains(Result.UPLOAD_FAILED)) {
                     cloudStatusIcon.setVisible(true);
                 }
+            }
+
+            String userId = Basket.getInstance().getUserInfo().getId();
+            if (app.getAppStats().getRating().getReviews().containsKey(userId)) {
+                reviewButton.setManaged(false);
             }
 
             refreshIndicator.setVisible(false);
@@ -407,6 +416,11 @@ public class LibraryItem extends AnchorPane {
         }
 
         refresh();
+    }
+
+    @FXML
+    public void review() {
+        new Review(app);
     }
 
     private void showPersistentInfo() {

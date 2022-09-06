@@ -96,8 +96,8 @@ public class ServerHandler {
     public boolean login(String username, String password) throws ServerConnectionException {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(newURIBuilder(address + "/login")
-                        .addKeyValuePair("username", "userA")
-                        .addKeyValuePair("password", "a12341234")
+                        .addKeyValuePair("username", username)
+                        .addKeyValuePair("password", password)
                         .build())
                 .POST(BodyPublishers.noBody())
                 .build();
@@ -211,12 +211,12 @@ public class ServerHandler {
     }
 
     public enum LibraryAction {
-        add, remove
+        ADD, REMOVE
     }
 
     public void modifyLibrary(String appId, LibraryAction action) throws ServerConnectionException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(newURIBuilder(address + "/api/v1/user/library/" + action)
+                .uri(newURIBuilder(address + "/api/v1/user/app-data/library/" + action.toString().toLowerCase())
                         .addKeyValuePair("appId", appId)
                         .build())
                 .POST(BodyPublishers.noBody())
@@ -263,11 +263,30 @@ public class ServerHandler {
         }
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(newURIBuilder(address + "/api/v1/user/info/session")
+                .uri(newURIBuilder(address + "/api/v1/user/app-data/session")
                         .addKeyValuePair("appId", appId)
                         .build())
                 .header("Content-Type", "application/json")
                 .POST(ofString(jsonString))
+                .build();
+
+        HttpResponse<Void> response;
+        try {
+            response = client.send(request, BodyHandlers.discarding());
+        } catch (IOException | InterruptedException e) {
+            throw new ServerConnectionException(e);
+        }
+
+        checkStatusCode(response);
+    }
+
+    public void uploadReview(String appId, int grade) throws ServerConnectionException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(newURIBuilder(address + "/api/v1/user/app-data/review")
+                        .addKeyValuePair("appId", appId)
+                        .addKeyValuePair("grade", grade)
+                        .build())
+                .POST(BodyPublishers.noBody())
                 .build();
 
         HttpResponse<Void> response;

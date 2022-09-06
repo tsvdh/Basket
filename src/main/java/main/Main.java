@@ -33,8 +33,8 @@ public class Main extends Application {
             Style jMetroStyle = getSettingsHandler().getConvertedObject(Settings.class).getJmetroStyle();
 
             return new StyleHandlerBuilder()
-                    .setApiStyle(ApiStyle.JMETRO_TWEAKED)
                     .setJMetroStyle(jMetroStyle)
+                    .setApiStyle(ApiStyle.JMETRO_TWEAKED)
                     // .addFilePath("/style/test.css")
                     .build();
         }

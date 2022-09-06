@@ -14,6 +14,7 @@ module basket {
     requires javafx.fxml;
     requires org.jetbrains.annotations;
     requires libphonenumber;
+    requires org.controlsfx.controls;
 
     opens data to basket.api;
     opens images to basket.api;
